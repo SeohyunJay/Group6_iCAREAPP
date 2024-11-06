@@ -1,0 +1,67 @@
+﻿@model Group6_iCAREAPP.Models.PatientRecord
+
+<h2>Edit Patient</h2>
+
+@using (Html.BeginForm("EditPatient", "Patient", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.patientID)
+
+    <div class="form-group">
+        <label for="name">Name:</label>
+        @Html.TextBoxFor(model => model.name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.name, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label for="address">Address:</label>
+        @Html.TextBoxFor(model => model.address, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.address, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label for="dateOfBirth">Date of Birth:</label>
+        @Html.TextBoxFor(model => model.dateOfBirth, new { @class = "form-control", type = "date" })
+        @Html.ValidationMessageFor(model => model.dateOfBirth, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label for="height">Height:</label>
+        @Html.TextBoxFor(model => model.height, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.height, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label for="weight">Weight:</label>
+        @Html.TextBoxFor(model => model.weight, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.weight, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label for="bloodGroup">Blood Group:</label>
+        @Html.TextBoxFor(model => model.bloodGroup, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.bloodGroup, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label for="bedID">Bed ID:</label>
+        @Html.TextBoxFor(model => model.bedID, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="treatmentArea">Treatment Area:</label>
+        @Html.TextBoxFor(model => model.treatmentArea, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="geoID">Geolocation ID:</label>
+        @Html.DropDownList("geoID", ViewBag.GeoCodes as SelectList, "Select Geolocation", new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.geoID, "", new { @class = "text-danger" })
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

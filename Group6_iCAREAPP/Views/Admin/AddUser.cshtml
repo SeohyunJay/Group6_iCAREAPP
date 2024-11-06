@@ -1,0 +1,46 @@
+﻿@model Group6_iCAREAPP.Models.iCAREUser
+
+@{
+    ViewBag.Title = "Add New User";
+}
+
+<h2>Add New User</h2>
+
+<form action="@Url.Action("AddUser", "Admin")" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label for="userName">Username:</label>
+        <input type="text" class="form-control" id="userName" name="userName" required />
+    </div>
+    <div class="form-group">
+        <label for="name">Full Name:</label>
+        <input type="text" class="form-control" id="name" name="name" required />
+    </div>
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" name="email" required />
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password" name="password" required />
+    </div>
+    <div class="form-group">
+        <label for="roleID">Role:</label>
+        <select class="form-control" id="roleID" name="selectedRoleID">
+            @foreach (var role in ViewBag.Roles as SelectList)
+            {
+                <option value="@role.Value">@role.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="geoID">Department:</label>
+        <select class="form-control" id="geoID" name="selectedGeoID">
+            @foreach (var department in ViewBag.Departments as SelectList)
+            {
+                <option value="@department.Value">@department.Text</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Add User</button>
+</form>

@@ -1,0 +1,100 @@
+﻿@model Group6_iCAREAPP.Models.DocumentMetadata
+
+<h2>Add Document</h2>
+
+@using (Html.BeginForm("AddDocument", "Document", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label for="docName">Document Name:</label>
+        @Html.TextBoxFor(model => model.docName, new { @class = "form-control", required = "required" })
+        @Html.ValidationMessageFor(model => model.docName, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label for="patientID">Patient:</label>
+        @Html.DropDownList("patientID", ViewBag.Patients as SelectList, "Select a Patient", new { @class = "form-control", required = "required" })
+        @Html.ValidationMessageFor(model => model.patientID, "", new { @class = "text-danger" })
+    </div>
+
+    <div class="form-group">
+        <label for="documentType">Document Type:</label>
+        @Html.DropDownList("documentType", new SelectList(new List<SelectListItem>
+        {
+            new SelectListItem { Text = "Treatment Record", Value = "Treatment Record" },
+            new SelectListItem { Text = "Lab Report", Value = "Lab Report" },
+            new SelectListItem { Text = "Imaging Result", Value = "Imaging Result" },
+            new SelectListItem { Text = "Prescription", Value = "Prescription" }
+        }, "Value", "Text"), "Select Document Type", new { @class = "form-control", required = "required" })
+    </div>
+
+    <!-- File upload section with drag-and-drop functionality -->
+    <div class="file-upload-wrapper" onclick="document.getElementById('fileInput').click()">
+        <input type="file" id="fileInput" name="uploadedFile" class="file-input" onchange="displayFileName()" required />
+        <div class="upload-area">
+            <p id="uploadText">Drag a file here, or <span>Choose a file to upload</span></p>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Add Document</button>
+    </div>
+}
+
+<style>
+    .file-upload-wrapper {
+        margin-top: 20px;
+        text-align: center;
+        border: 2px dashed #ddd;
+        padding: 40px;
+        border-radius: 10px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .upload-area {
+        font-size: 1.2em;
+        color: #555;
+    }
+
+    .file-input {
+        display: none;
+    }
+
+    .dragging {
+        background-color: #f0f8ff;
+    }
+</style>
+
+<script>
+    // JavaScript to handle drag-and-drop file input and display selected file name
+    const uploadArea = document.querySelector('.file-upload-wrapper');
+    const fileInput = document.getElementById('fileInput');
+    const uploadText = document.getElementById('uploadText');
+
+    uploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadArea.classList.add('dragging');
+    });
+
+    uploadArea.addEventListener('dragleave', () => {
+        uploadArea.classList.remove('dragging');
+    });
+
+    uploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadArea.classList.remove('dragging');
+        const files = e.dataTransfer.files;
+        fileInput.files = files;
+        displayFileName();
+    });
+
+    function displayFileName() {
+        if (fileInput.files.length > 0) {
+            uploadText.textContent = `File selected: ${fileInput.files[0].name}`;
+        } else {
+            uploadText.textContent = 'Drag a file here, or Choose a file to upload';
+        }
+    }
+</script>

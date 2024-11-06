@@ -1,0 +1,43 @@
+﻿@model Group6_iCAREAPP.Models.iCAREUser
+
+@{
+    ViewBag.Title = "Edit User";
+}
+
+<h2>Edit User</h2>
+
+<form action="@Url.Action("EditUser", "Admin")" method="post">
+    @Html.AntiForgeryToken()
+    <div class="form-group">
+        <label for="userName">Username:</label>
+        <input type="text" class="form-control" id="userName" name="userName" value="@Model.userName" required />
+    </div>
+    <div class="form-group">
+        <label for="name">Full Name:</label>
+        <input type="text" class="form-control" id="name" name="name" value="@Model.name" required />
+    </div>
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" class="form-control" id="email" name="email" value="@Model.email" required />
+    </div>
+    <div class="form-group">
+        <label for="roleID">Role:</label>
+        <select class="form-control" id="roleID" name="selectedRoleID">
+            @foreach (var role in ViewBag.Roles as SelectList)
+            {
+                <option value="@role.Value" @(Model.roleID == role.Value ? "selected" : "")>@role.Text</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="geoID">Department:</label>
+        <select class="form-control" id="geoID" name="selectedGeoID">
+            @foreach (var department in ViewBag.Departments as SelectList)
+            {
+                <option value="@department.Value" @(Model.geoID == department.Value ? "selected" : "")>@department.Text</option>
+            }
+        </select>
+    </div>
+    <input type="hidden" name="ID" value="@Model.ID" />
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
