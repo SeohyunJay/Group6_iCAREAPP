@@ -1,34 +1,104 @@
-﻿@{
+﻿@model Group6_iCAREAPP.Models.HomeIndexViewModel
+
+@{
     ViewBag.Title = "Home";
 }
 
 <h2>Welcome, @Session["LoggedUserName"]!</h2>
 
-@if (ViewBag.RoleID == "1") // Admin
+@if (Model.RoleID != null)
 {
-    <p>Your role: <strong>Admin</strong></p>
-    <p>As an System Administrator, you can manage (create, update, and delete) users, including system administrators, doctors, and nurses.</p>
-    <a href="@Url.Action("ManageUsers", "Admin")" class="btn btn-primary">Manage Users</a>
-}
-else if (ViewBag.RoleID == "2") // Doctor
-{
-    <p>Your role: <strong>Doctor</strong></p>
-    <p>As a Doctor, you can manage patient records and assignments.</p>
-    <a href="@Url.Action("ManagePatient", "Patient")" class="btn btn-primary">Manage Patients</a>
-    <a href="@Url.Action("AssignPatient", "Patient")" class="btn btn-primary">Assign Patient</a>
-    <a href="@Url.Action("DisplayPalette", "Document")" class="btn btn-primary">Display Palette</a>
-    <a href="@Url.Action("MyBoard", "Patient")" class="btn btn-primary">Display MyBoard</a>
-}
-else if (ViewBag.RoleID == "3") // Nurse
-{
-    <p>Your role: <strong>Nurse</strong></p>
-    <p>As a Nurse, you can manage patient tasks and view assigned work.</p>
-    <a href="@Url.Action("ManagePatient", "Patient")" class="btn btn-primary">Manage Patients</a>
-    <a href="@Url.Action("AssignPatient", "Patient")" class="btn btn-primary">Assign Patient</a>
-    <a href="@Url.Action("DisplayPalette", "Document" )" class="btn btn-primary">Display Palette</a>
-    <a href="@Url.Action("MyBoard", "Patient")" class="btn btn-primary">Display MyBoard</a>
+    if (Model.RoleID == "1") // Admin
+    {
+        <p>Your role: <strong>Admin</strong></p>
+        <p>As a System Administrator, you can manage (create, update, and delete) users, including system administrators, doctors, and nurses.</p>
+
+        <h2>Users</h2>
+
+        <table class="table table-striped mt-3">
+            <thead>
+                <tr>
+                    <th>Username</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Users == null || !Model.Users.Any())
+                {
+                    <tr>
+                        <td colspan="6">No users found.</td>
+                    </tr>
+                }
+                else
+                {
+                    foreach (var user in Model.Users)
+                    {
+                        <tr>
+                            <td>@(user.userName ?? "N/A")</td>
+                            <td>@(user.name ?? "N/A")</td>
+                            <td>@(user.email ?? "N/A")</td>
+                            <td>@(user.roleName ?? "N/A")</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Your role: <strong>@(Model.RoleID == "2" ? "Doctor" : "Nurse")</strong></p>
+
+        <h3>iCARE Board</h3>
+        <p>
+            Sort by:
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.SortByDepartment })">Department</a> |
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.SortByPatientName })">Patient Name</a> |
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.SortByDOB })">Date of Birth</a> |
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.SortByWeight })">Weight</a> |
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.SortByHeight })">Height</a> |
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.SortByBedID })">Bed ID</a> |
+            <a href="@Url.Action("Index", new { sortOrder = ViewBag.SortByBloodGroup })">Blood Group</a>
+        </p>
+
+        if (Model.Patients != null && Model.Patients.Any())
+        {
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Patient Name</th>
+                        <th>Department</th>
+                        <th>Date of Birth</th>
+                        <th>Weight</th>
+                        <th>Height</th>
+                        <th>Bed ID</th>
+                        <th>Blood Group</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var patient in Model.Patients)
+                    {
+                        <tr>
+                            <td>@patient.name</td>
+                            <td>@patient.geoID</td>
+                            <td>@patient.dateOfBirth.ToString("yyyy-MM-dd")</td>
+                            <td>@patient.weight</td>
+                            <td>@patient.height</td>
+                            <td>@patient.bedID</td>
+                            <td>@patient.bloodGroup</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No patients found for your department.</p>
+        }
+    }
 }
 else
 {
-    <p>Your role is not defined. Please contact the administrator.</p>
+    <p>You are not logged in. Please log in to view your iCARE Board.</p>
 }

@@ -2,16 +2,30 @@
 
 <h2>Manage Users</h2>
 
-<a href="@Url.Action("AddUser", "Admin")" class="btn btn-primary">Add New User</a>
+<button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
+<a href="@Url.Action("AddUser", "Admin")" class="btn btn-primary mb-3">Add New User</a>
 
 <table class="table table-striped mt-3">
     <thead>
         <tr>
-            <th>Username</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Department</th>
+            <th>
+                <a href="@Url.Action("ManageUsers", new { sortOrder = ViewBag.SortByUsername })">Username</a>
+            </th>
+            <th>
+                <a href="@Url.Action("ManageUsers", new { sortOrder = ViewBag.SortByName })">Name</a>
+            </th>
+            <th>
+                <a href="@Url.Action("ManageUsers", new { sortOrder = ViewBag.SortByEmail })">Email</a>
+            </th>
+            <th>
+                <a href="@Url.Action("ManageUsers", new { sortOrder = ViewBag.SortByRole })">Role</a>
+            </th>
+            <th>
+                <a href="@Url.Action("ManageUsers", new { sortOrder = ViewBag.SortByDepartment })">Department</a>
+            </th>
+            <th>
+                <a href="@Url.Action("ManageUsers", new { sortOrder = ViewBag.SortByContractExpirationDate })">Contract Expiration Date</a>
+            </th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -19,7 +33,7 @@
         @if (!Model.Any())
         {
             <tr>
-                <td colspan="6">No users found.</td>
+                <td colspan="7">No users found.</td>
             </tr>
         }
         else
@@ -32,6 +46,7 @@
                     <td>@(user.email ?? "N/A")</td>
                     <td>@(user.roleName ?? "N/A")</td>
                     <td>@(user.departmentName ?? "N/A")</td>
+                    <td>@(user.contractExpirationDate?.ToString("yyyy-MM-dd") ?? "N/A")</td>
                     <td>
                         <a href="@Url.Action("EditUser", "Admin", new { id = user.ID })" class="btn btn-warning">Edit</a>
                         <form action="@Url.Action("DeleteUser", "Admin", new { id = user.ID })" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this user?');">

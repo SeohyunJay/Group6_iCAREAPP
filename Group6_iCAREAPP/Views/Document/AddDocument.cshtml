@@ -2,6 +2,8 @@
 
 <h2>Add Document</h2>
 
+<button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
+
 @using (Html.BeginForm("AddDocument", "Document", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
@@ -29,7 +31,17 @@
         }, "Value", "Text"), "Select Document Type", new { @class = "form-control", required = "required" })
     </div>
 
-    <!-- File upload section with drag-and-drop functionality -->
+    <div class="form-group">
+        <label for="drugID">Select Drug:</label>
+        <select class="form-control" name="selectedDrugID" id="drugID">
+            <option value="">-- Select a Drug --</option>
+            @foreach (var drug in ViewBag.Drugs)
+            {
+                <option value="@drug.Value">@drug.Text</option>
+            }
+        </select>
+    </div>
+
     <div class="file-upload-wrapper" onclick="document.getElementById('fileInput').click()">
         <input type="file" id="fileInput" name="uploadedFile" class="file-input" onchange="displayFileName()" required />
         <div class="upload-area">
@@ -68,7 +80,6 @@
 </style>
 
 <script>
-    // JavaScript to handle drag-and-drop file input and display selected file name
     const uploadArea = document.querySelector('.file-upload-wrapper');
     const fileInput = document.getElementById('fileInput');
     const uploadText = document.getElementById('uploadText');

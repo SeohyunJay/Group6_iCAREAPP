@@ -2,6 +2,8 @@
 
 <h2>Edit Patient</h2>
 
+<button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
+
 @using (Html.BeginForm("EditPatient", "Patient", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
@@ -21,8 +23,7 @@
 
     <div class="form-group">
         <label for="dateOfBirth">Date of Birth:</label>
-        @Html.TextBoxFor(model => model.dateOfBirth, new { @class = "form-control", type = "date" })
-        @Html.ValidationMessageFor(model => model.dateOfBirth, "", new { @class = "text-danger" })
+        @Html.TextBoxFor(model => model.dateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
     </div>
 
     <div class="form-group">

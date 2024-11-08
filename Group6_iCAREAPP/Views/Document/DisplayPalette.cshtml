@@ -1,84 +1,42 @@
 ﻿@model IEnumerable<Group6_iCAREAPP.Models.DisplayPaletteViewModel>
 
 <h2>Display Palette</h2>
+<button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
 
-<!-- Search Form -->
 <form method="get" action="@Url.Action("DisplayPalette", "Document")" class="form-inline mb-3">
     <div class="form-group mr-2">
-        <input type="text" name="searchQuery" placeholder="Search documents or treatments..." value="@Request.QueryString["searchQuery"]" class="form-control" />
+        <input type="text" name="searchQuery" placeholder="Search by patient or document name..." value="@Request.QueryString["searchQuery"]" class="form-control" />
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
-<a href="@Url.Action("AddDocument", "Document")" class="btn btn-primary mb-3">Add Document</a>
-
 <table class="table table-striped mt-3">
     <thead>
         <tr>
-            <th>ID</th>
-            <th>Name</th>
-            <th>Date</th>
-            <th>Type</th>
-            <th>Created By / Worker</th>
-            <th>Last Modified</th>
-            <th>Modified By</th>
-            <th>Description</th>
-            <th>Actions</th>
+            <th>Patient Name</th>
+            <th>Date of Birth</th>
+            <th>Documents</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
-                <td>@(item.IsDocument ? item.DocID : item.TreatmentID)</td>
                 <td>@item.PatientName</td>
-                <td>@(item.IsDocument ? item.DateOfCreation?.ToString("MM/dd/yyyy") : item.TreatmentDate?.ToString("MM/dd/yyyy"))</td>
-                <td>@(item.IsDocument ? item.DocumentType : "Treatment")</td>
-                <td>@(item.IsDocument ? item.CreatedBy : item.WorkerName)</td>
-                <td>@(item.IsDocument ? item.LastModified?.ToString("MM/dd/yyyy hh:mm tt") : "-")</td>
-                <td>@(item.IsDocument ? item.ModifiedBy : "-")</td>
-                <td title="@item.TreatmentDescription">
-                    @(item.IsDocument ? "-" : (item.TreatmentDescription?.Length > 20 ? item.TreatmentDescription.Substring(0, 20) + "..." : item.TreatmentDescription))
-                </td>
+                <td>@(item.dateOfBirth.HasValue ? item.dateOfBirth.Value.ToString("MM/dd/yyyy") : "N/A")</td>
                 <td>
-                    @if (item.IsDocument)
+                    @if (item.PatientDocuments != null && item.PatientDocuments.Any())
                     {
-                        <button class="btn btn-warning" onclick="editDocument('@item.DocID')">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteDocument('@item.DocID')">Delete</button>
+                        <a href="@Url.Action("ViewPatientDocuments", "Document", new { patientID = item.PatientID.ToString() })" class="btn btn-info">
+                            View Documents
+                        </a>
                     }
                     else
                     {
-                        <button class="btn btn-warning" onclick="editTreatment('@item.TreatmentID')">Edit</button>
-                        <button class="btn btn-danger" onclick="deleteTreatment('@item.TreatmentID')">Delete</button>
+                        <span>No documents</span>
                     }
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
-<script>
-    function editDocument(docID) {
-        // Redirect to the EditDocument action with the docID parameter
-        window.location.href = `/Document/EditDocument?docID=${docID}`;
-    }
-
-    function editTreatment(treatmentID) {
-        // Redirect to the EditTreatment action with the treatmentID parameter
-        window.location.href = `/Treatment/EditTreatment?treatmentID=${treatmentID}`;
-    }
-
-    function deleteDocument(docID) {
-        if (confirm("Are you sure you want to delete this document?")) {
-            // Redirect to the DeleteDocument action with the docID parameter
-            window.location.href = `/Document/DeleteDocument?docID=${docID}`;
-        }
-    }
-
-    function deleteTreatment(treatmentID) {
-        if (confirm("Are you sure you want to delete this treatment?")) {
-            // Redirect to the DeleteTreatment action with the treatmentID parameter
-            window.location.href = `/Treatment/DeleteTreatment?treatmentID=${treatmentID}`;
-        }
-    }
-</script>

@@ -12,5 +12,6 @@ namespace Group6_iCAREAPP.Models
         public DateTime? LastModified { get; set; }
         public string ModifiedBy { get; set; }
         public string DocumentType { get; set; }
+        public string DrugID { get; set; }
     }
 }

@@ -1,0 +1,61 @@
+﻿@model Group6_iCAREAPP.Models.DisplayPaletteViewModel
+
+@{
+    ViewData["Title"] = "View Patient Documents";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="patient-info">
+    <h4>Patient Information</h4>
+    <p><strong>Patient Name:</strong> @Model.PatientName</p>
+    <p><strong>Date of Birth:</strong> @(Model.dateOfBirth.HasValue ? Model.dateOfBirth.Value.ToString("MM/dd/yyyy") : "N/A")</p>
+</div>
+
+<h4>Documents</h4>
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Document Name</th>
+            <th>Creation Date</th>
+            <th>Created By</th>
+            <th>Modification Date</th>
+            <th>Modified By</th>
+            <th>Document Type</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.PatientDocuments != null && Model.PatientDocuments.Any())
+        {
+            foreach (var document in Model.PatientDocuments)
+            {
+                <tr>
+                    <td>@document.DocName</td>
+                    <td>@(document.DateOfCreation.HasValue ? document.DateOfCreation.Value.ToString("MM/dd/yyyy") : "N/A")</td>
+                    <td>@document.CreatedBy</td>
+                    <td>@(document.ModificationDate.HasValue ? document.ModificationDate.Value.ToString("MM/dd/yyyy") : "N/A")</td>
+                    <td>@document.ModifiedBy</td>
+                    <td>@document.DocumentType</td>
+                    <td>
+                        <a href="@Url.Action("ViewDocument", "Document", new { docID = document.DocID })" class="btn btn-info">View</a>
+                        <a href="@Url.Action("EditDocument", "Document", new { docID = document.DocID })" class="btn btn-warning btn-sm">Edit</a>
+                        <a href="@Url.Action("DeleteDocument", "Document", new { docID = document.DocID })" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this document?')">Delete</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center">No documents found for this patient.</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="mb-3">
+    <a href="@Url.Action("AddDocument", "Document")" class="btn btn-success">Add Document</a>
+</div>
+
+<a href="@Url.Action("DisplayPalette", "Document")" class="btn btn-secondary mt-3">Back to Patient List</a>

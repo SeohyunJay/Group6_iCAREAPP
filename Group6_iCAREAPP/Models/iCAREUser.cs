@@ -29,6 +29,7 @@ namespace Group6_iCAREAPP.Models
         public DateTime registrationDate { get; set; }
         public string roleID { get; set; }
         public string geoID { get; set; }
+        public DateTime? contractExpirationDate { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DocumentMetadata> DocumentMetadata { get; set; }

@@ -138,6 +138,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\HomeIndexViewModel.cs" />
     <Compile Include="Models\DisplayPaletteViewModel.cs" />
     <Compile Include="Models\DocumentViewModel.cs" />
     <Compile Include="Models\DatabaseInitializer.cs" />
@@ -274,10 +275,13 @@
     <Content Include="Views\Admin\AddUser.cshtml" />
     <Content Include="Views\Admin\EditUser.cshtml" />
     <Content Include="Views\Treatment\EditTreatment.cshtml" />
+    <Content Include="Views\Admin\AddRole.cshtml" />
+    <Content Include="Views\Admin\AddDepartment.cshtml" />
+    <Content Include="Views\Document\ViewPatientDocuments.cshtml" />
+    <Content Include="Views\Account\MyInfo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Logout\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

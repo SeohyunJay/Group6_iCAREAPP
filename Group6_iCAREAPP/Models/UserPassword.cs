@@ -25,7 +25,6 @@ namespace Group6_iCAREAPP.Models
 
         public virtual iCAREUser iCAREUser { get; set; }
 
-        // Encrypts the password using SHA-256
         public string EncryptPassword(string password)
         {
             using (var sha256 = SHA256.Create())
@@ -54,7 +53,6 @@ namespace Group6_iCAREAPP.Models
             }
         }
 
-        // Verifies that the entered password matches the stored encrypted password
         public bool ValidatePassword(string enteredPassword, string storedEncryptedPassword)
         {
             string hashedEnteredPassword = EncryptPassword(enteredPassword);

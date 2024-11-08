@@ -1,7 +1,8 @@
-﻿
-@model IEnumerable<Group6_iCAREAPP.Models.PatientRecord>
+﻿@model IEnumerable<Group6_iCAREAPP.Models.PatientRecord>
 
 <h2>Assign Patients</h2>
+
+<button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
 
 <form method="get" action="@Url.Action("AssignPatient", "Patient")">
     <label for="geoFilter">Filter by Geographic Unit:</label>

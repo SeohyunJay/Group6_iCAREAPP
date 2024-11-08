@@ -29,6 +29,7 @@ namespace Group6_iCAREAPP.Models
         public string modifiedByID { get; set; }
         public string documentType { get; set; }
         public string FileName { get; set; }
+        public string drugID { get; set; }
         public virtual iCAREUser iCAREUser { get; set; }
         public virtual iCAREUser iCAREUser1 { get; set; }
         public virtual PatientRecord PatientRecord { get; set; }

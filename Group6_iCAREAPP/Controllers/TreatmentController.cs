@@ -10,7 +10,6 @@ namespace Group6_iCAREAPP.Controllers
     {
         private Group6_iCAREDBEntities db = new Group6_iCAREDBEntities();
 
-        // GET: Treatment/EditTreatment
         [HttpGet]
         public ActionResult EditTreatment(string treatmentID)
         {
@@ -20,7 +19,6 @@ namespace Group6_iCAREAPP.Controllers
                 return RedirectToAction("DisplayPalette", "Document");
             }
 
-            // Retrieve the treatment record by ID
             var treatment = db.TreatmentRecord.FirstOrDefault(t => t.treatmentID == treatmentID);
             if (treatment == null)
             {
@@ -28,11 +26,9 @@ namespace Group6_iCAREAPP.Controllers
                 return RedirectToAction("DisplayPalette", "Document");
             }
 
-            return View(treatment); // Ensure this returns the TreatmentRecord model
+            return View(treatment);
         }
 
-
-        // POST: Treatment/EditTreatment
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditTreatment(TreatmentRecord treatment)
@@ -57,7 +53,6 @@ namespace Group6_iCAREAPP.Controllers
                 return RedirectToAction("DisplayPalette", "Document");
             }
 
-            // If the model is invalid, return to the edit view with the current data
             return View(treatment);
         }
 

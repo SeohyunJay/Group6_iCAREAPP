@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@{
+    ViewBag.Title = "Home";
+    var roleID = Session["RoleID"] != null ? Session["RoleID"].ToString() : null;
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -18,29 +23,57 @@
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
+
+                    @if (!string.IsNullOrEmpty(roleID))
+                    {
+                        // Admin (RoleID = 1)
+                        if (roleID == "1")
+                        {
+                            <li>@Html.ActionLink("Manage Users", "ManageUsers", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Add Role", "AddRole", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Add Department", "AddDepartment", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
+                        }
+                        // Doctor (RoleID = 2)
+                        else if (roleID == "2")
+                        {
+                            <li>@Html.ActionLink("Manage Patients", "ManagePatient", "Patient", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Assign Patient", "AssignPatient", "Patient", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Display Palette", "DisplayPalette", "Document", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("MyBoard", "MyBoard", "Patient", new { area = "" }, new { @class = "nav-link" })</li>
+                        }
+                        // Nurse (RoleID = 3)
+                        else if (roleID == "3")
+                        {
+                            <li>@Html.ActionLink("Manage Patients", "ManagePatient", "Patient", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Assign Patient", "AssignPatient", "Patient", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("Display Palette", "DisplayPalette", "Document", new { area = "" }, new { @class = "nav-link" })</li>
+                            <li>@Html.ActionLink("MyBoard", "MyBoard", "Patient", new { area = "" }, new { @class = "nav-link" })</li>
+                        }
+                    }
+
+                    @if (Session["LoggedUser"] != null)
+                    {
+                        <li>@Html.ActionLink("MyInfo", "MyInfo", "Account", new { area = "" }, new { @class = "nav-link" })</li>
+                    }
                 </ul>
+
+                @if (Session["LoggedUser"] != null)
+                {
+                    <form action="@Url.Action("Logout", "Account")" method="post" style="display: inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                }
             </div>
         </div>
     </nav>
+
     <div class="container body-content">
         @RenderBody()
         <hr />
 
         <footer class="footer">
             <p>&copy; @DateTime.Now.Year - iCARE</p>
-
-            @if (Session["LoggedUser"] != null)
-            {
-                <form action="@Url.Action("Logout", "Account")" method="post" style="display: inline;">
-                    @Html.AntiForgeryToken()
-                    <button type="submit" class="btn btn-danger">Logout</button>
-                </form>
-            }
-
-            @if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
-            {
-                <a href="@Url.Action("Manage", "Admin")" class="btn btn-primary">Manage Users</a>
-            }
         </footer>
     </div>
 

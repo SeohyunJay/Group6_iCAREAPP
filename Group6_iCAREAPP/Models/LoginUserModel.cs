@@ -1,4 +1,5 @@
-﻿using System.Dynamic;
+﻿using System;
+using System.Dynamic;
 
 namespace Group6_iCAREAPP.Models
 {
@@ -13,6 +14,7 @@ namespace Group6_iCAREAPP.Models
         public string geoID { get; set; }
         public string encryptedPassword { get; set; }
         public string departmentName { get; set; }
+        public DateTime? contractExpirationDate { get; set; }
     }
 
 }

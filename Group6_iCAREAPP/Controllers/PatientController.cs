@@ -11,11 +11,24 @@ namespace Group6_iCAREAPP.Controllers
     {
         private Group6_iCAREDBEntities db = new Group6_iCAREDBEntities();
 
-        // GET: Patient/Index - List all patients
-        public ActionResult ManagePatient()
+        public ActionResult ManagePatient(string selectedGeoID)
         {
-            string sqlQuery = "SELECT * FROM PatientRecord";
-            var patients = db.Database.SqlQuery<PatientRecord>(sqlQuery).ToList();
+            var geoCodes = db.Database.SqlQuery<GeoCodes>("SELECT geoID, description FROM GeoCodes").ToList();
+            ViewBag.GeoCodes = new SelectList(geoCodes, "geoID", "description");
+
+            List<PatientRecord> patients;
+            if (string.IsNullOrEmpty(selectedGeoID))
+            {
+                string sqlQuery = "SELECT * FROM PatientRecord";
+                patients = db.Database.SqlQuery<PatientRecord>(sqlQuery).ToList();
+            }
+            else
+            {
+                string sqlQuery = "SELECT * FROM PatientRecord WHERE geoID = @geoID";
+                patients = db.Database.SqlQuery<PatientRecord>(sqlQuery, new SqlParameter("@geoID", selectedGeoID)).ToList();
+            }
+
+            ViewBag.SelectedGeoID = selectedGeoID;
             return View("ManagePatient", patients);
         }
 
@@ -121,7 +134,6 @@ namespace Group6_iCAREAPP.Controllers
             return RedirectToAction("ManagePatient");
         }
 
-        // GET: Patient/AssignPatient - Display a list of patients for assignment
         [HttpGet]
         public ActionResult AssignPatient(string selectedGeoID)
         {
@@ -149,6 +161,8 @@ namespace Group6_iCAREAPP.Controllers
         public ActionResult AssignPatient(List<string> selectedPatients)
         {
             string workerID = Session["LoggedUserID"]?.ToString();
+            string roleID = Session["RoleID"]?.ToString();
+
             if (string.IsNullOrEmpty(workerID))
             {
                 TempData["ErrorMessage"] = "You are not logged in. Please log in first.";
@@ -169,48 +183,84 @@ namespace Group6_iCAREAPP.Controllers
             }
 
             bool assignmentSuccess = false;
+
             foreach (var patientID in selectedPatients)
             {
                 var alreadyAssigned = db.TreatmentRecord.Any(t => t.workerID == workerID && t.patientID == patientID);
                 if (alreadyAssigned)
                 {
                     TempData["ErrorMessage"] = $"Worker is already assigned to patient {db.PatientRecord.FirstOrDefault(p => p.patientID == patientID)?.name}.";
-                    return RedirectToAction("AssignPatient");
+                    continue;
                 }
 
-                // Generate treatmentID and assign the patient
-                string treatmentID = "TR" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
-
-                string sqlInsertAssignment = @"
-            INSERT INTO TreatmentRecord (treatmentID, workerID, patientID, treatmentDate, description) 
-            VALUES (@treatmentID, @workerID, @patientID, @treatmentDate, @description)";
-
-                db.Database.ExecuteSqlCommand(
-                    sqlInsertAssignment,
-                    new SqlParameter("@treatmentID", treatmentID),
-                    new SqlParameter("@workerID", workerID),
-                    new SqlParameter("@patientID", patientID),
-                    new SqlParameter("@treatmentDate", DateTime.Now),
-                    new SqlParameter("@description", "Assigned patient")
-                );
-
-                // Increment the numOfNurses field in PatientRecord table
                 var patientRecord = db.PatientRecord.FirstOrDefault(p => p.patientID == patientID);
                 if (patientRecord != null)
                 {
-                    // Ensure numOfNurses doesn't exceed the limit (e.g., 3)
-                    if (patientRecord.numOfNurses < 3)
+                    if (roleID == "2") // Doctor
                     {
-                        patientRecord.numOfNurses += 1;
+                        if (patientRecord.hasDoctor == true)
+                        {
+                            TempData["ErrorMessage"] = $"Patient {patientRecord.name} already has a doctor assigned.";
+                            continue;
+                        }
+
+                        if (patientRecord.numOfNurses < 1)
+                        {
+                            TempData["ErrorMessage"] = $"Patient {patientRecord.name} must have at least one nurse assigned before a doctor can be assigned.";
+                            continue;
+                        }
+
+                        patientRecord.hasDoctor = true;
                         db.SaveChanges();
+
+                        string treatmentID = "TR" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+
+                        string sqlInsertAssignment = @"
+                            INSERT INTO TreatmentRecord (treatmentID, workerID, patientID, treatmentDate, description) 
+                            VALUES (@treatmentID, @workerID, @patientID, @treatmentDate, @description)";
+
+                        db.Database.ExecuteSqlCommand(
+                            sqlInsertAssignment,
+                            new SqlParameter("@treatmentID", treatmentID),
+                            new SqlParameter("@workerID", workerID),
+                            new SqlParameter("@patientID", patientID),
+                            new SqlParameter("@treatmentDate", DateTime.Now),
+                            new SqlParameter("@description", "Assigned patient")
+                        );
+
+                        assignmentSuccess = true;
                     }
-                    else
+                    else if (roleID == "3") // Nurse
                     {
-                        TempData["ErrorMessage"] = $"Patient {patientRecord.name} already has the maximum number of nurses assigned.";
+                        if (patientRecord.numOfNurses < 3)
+                        {
+                            patientRecord.numOfNurses += 1;
+                            db.SaveChanges();
+
+                            string treatmentID = "TR" + DateTime.Now.ToString("yyyyMMddHHmmssfff");
+
+                            string sqlInsertAssignment = @"
+                        INSERT INTO TreatmentRecord (treatmentID, workerID, patientID, treatmentDate, description) 
+                        VALUES (@treatmentID, @workerID, @patientID, @treatmentDate, @description)";
+
+                            db.Database.ExecuteSqlCommand(
+                                sqlInsertAssignment,
+                                new SqlParameter("@treatmentID", treatmentID),
+                                new SqlParameter("@workerID", workerID),
+                                new SqlParameter("@patientID", patientID),
+                                new SqlParameter("@treatmentDate", DateTime.Now),
+                                new SqlParameter("@description", "Assigned patient")
+                            );
+
+                            assignmentSuccess = true;
+                        }
+                        else
+                        {
+                            TempData["ErrorMessage"] = $"Patient {patientRecord.name} already has the maximum number of nurses assigned.";
+                            continue;
+                        }
                     }
                 }
-
-                assignmentSuccess = true;
             }
 
             if (assignmentSuccess)
@@ -225,52 +275,63 @@ namespace Group6_iCAREAPP.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeassignPatient(string patientID)
         {
-            // Check if the user is logged in and retrieve workerID
             string workerID = Session["LoggedUserID"]?.ToString();
+            string roleID = Session["RoleID"]?.ToString();
+
             if (string.IsNullOrEmpty(workerID))
             {
                 TempData["ErrorMessage"] = "You are not logged in. Please log in first.";
                 return RedirectToAction("Login", "Account");
             }
 
-            // Find the treatment record for this worker and patient
-            var treatmentRecord = db.TreatmentRecord.FirstOrDefault(tr => tr.workerID == workerID && tr.patientID == patientID);
+            var treatmentRecord = db.TreatmentRecord.FirstOrDefault(t => t.workerID == workerID && t.patientID == patientID);
             if (treatmentRecord == null)
             {
-                TempData["ErrorMessage"] = "No assignment found to deassign.";
-                return RedirectToAction("MyBoard");
+                TempData["ErrorMessage"] = "Assignment not found or already removed.";
+                return RedirectToAction("MyBoard", "Patient");
             }
 
-            // Delete the treatment record
             db.TreatmentRecord.Remove(treatmentRecord);
-
-            // Update the nurse count for the patient
-            var patient = db.PatientRecord.FirstOrDefault(p => p.patientID == patientID);
-            if (patient != null && patient.numOfNurses > 0)
-            {
-                patient.numOfNurses -= 1;
-                db.Entry(patient).State = System.Data.Entity.EntityState.Modified;
-            }
-
             db.SaveChanges();
 
-            return RedirectToAction("MyBoard");
+            var patientRecord = db.PatientRecord.FirstOrDefault(p => p.patientID == patientID);
+            if (patientRecord != null)
+            {
+                if (roleID == "3") // Nurse
+                {
+                    if (patientRecord.numOfNurses > 0)
+                    {
+                        patientRecord.numOfNurses -= 1;
+                    }
+                }
+                else if (roleID == "2") // Doctor
+                {
+                    patientRecord.hasDoctor = false;
+                }
+
+                var remainingDoctors = db.TreatmentRecord.Any(t => t.patientID == patientID && t.workerID != workerID && db.iCAREUser.Any(u => u.ID == t.workerID && u.roleID == "2"));
+                if (!remainingDoctors)
+                {
+                    patientRecord.hasDoctor = false;
+                }
+
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("MyBoard", "Patient");
         }
 
         [HttpGet]
         public ActionResult MyBoard()
         {
-            // Retrieve the logged-in user's name from the session and assign it to ViewBag.UserName
             ViewBag.UserName = Session["LoggedUser"];
 
-            // Your logic to get assigned patients
             string workerID = Session["LoggedUserID"]?.ToString();
             if (workerID == null)
             {
                 return RedirectToAction("Login", "Account");
             }
 
-            // Fetch assigned patients
             var patients = db.Database.SqlQuery<PatientRecord>(
                 "SELECT p.* FROM PatientRecord p " +
                 "JOIN TreatmentRecord t ON p.patientID = t.patientID " +
@@ -280,8 +341,5 @@ namespace Group6_iCAREAPP.Controllers
 
             return View("MyBoard", patients);
         }
-
-
     }
-
 }

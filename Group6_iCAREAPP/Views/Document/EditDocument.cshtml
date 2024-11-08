@@ -2,27 +2,25 @@
 
 <h2>Edit Document</h2>
 
+<button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
+
 <form asp-action="EditDocument" method="post" enctype="multipart/form-data">
     @Html.AntiForgeryToken()
 
-    <!-- Hidden field for Document ID -->
     <input type="hidden" name="docID" value="@Model.docID" />
 
-    <!-- Document Name Field -->
     <div class="form-group">
         <label for="docName">Document Name:</label>
         <input type="text" class="form-control" id="docName" name="docName" value="@Model.docName" required />
         @Html.ValidationMessageFor(model => model.docName, "", new { @class = "text-danger" })
     </div>
 
-    <!-- Patient Dropdown -->
     <div class="form-group">
         <label for="patientID">Patient:</label>
         @Html.DropDownList("patientID", ViewBag.Patients as SelectList, "Select a Patient", new { @class = "form-control" })
         @Html.ValidationMessageFor(model => model.patientID, "", new { @class = "text-danger" })
     </div>
 
-    <!-- Document Type Dropdown -->
     <div class="form-group">
         <label for="documentType">Document Type:</label>
         <select class="form-control" id="documentType" name="documentType">
@@ -33,7 +31,6 @@
         </select>
     </div>
 
-    <!-- Current File Section -->
     <div class="form-group">
         <label>Current File:</label>
         <p>@(ViewBag.FileName ?? "No file uploaded")</p>
@@ -42,14 +39,12 @@
         <input type="file" id="uploadedFile" name="uploadedFile" class="form-control-file" />
     </div>
 
-    <!-- Delete Current File Checkbox -->
     <div class="form-group">
         <label for="deleteFile">Delete Current File:</label>
         <input type="checkbox" id="deleteFile" name="deleteFile" />
         <label for="deleteFile">Check to delete existing file</label>
     </div>
 
-    <!-- Submit Button -->
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Save Changes</button>
     </div>

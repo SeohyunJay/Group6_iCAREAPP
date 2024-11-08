@@ -2,6 +2,8 @@
 
 <h2>My Board</h2>
 
+<button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
+
 <p>@Session["LoggedUserName"], your assigned patients are:</p>
 
 <table class="table table-striped">
@@ -37,7 +39,6 @@
                 <td>@patient.numOfNurses</td>
                 <td>@(patient.hasDoctor.GetValueOrDefault() ? "Yes" : "No")</td>
                 <td>
-                    <!-- Deassign Button -->
                     @using (Html.BeginForm("DeassignPatient", "Patient", FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()

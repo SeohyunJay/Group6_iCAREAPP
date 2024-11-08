@@ -5,10 +5,8 @@ public class LogoutController : Controller
     [ValidateAntiForgeryToken]
     public ActionResult Index()
     {
-        // Clear the session to log out the user
         Session.Clear();
 
-        // Redirect to the Login page (in AccountController)
         return RedirectToAction("Login", "Account");
     }
 }

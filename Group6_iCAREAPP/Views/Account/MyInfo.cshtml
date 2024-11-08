@@ -1,0 +1,27 @@
+﻿@model Group6_iCAREAPP.Models.LoginUserModel
+
+@{
+    ViewBag.Title = "MyInfo";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">My Information</h2>
+
+    <div class="card mx-auto" style="max-width: 600px;">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">User Details</h5>
+        </div>
+        <div class="card-body">
+            <p><strong>Name:</strong> @Model.name</p>
+            <p><strong>Username:</strong> @Model.userName</p>
+            <p><strong>Email:</strong> @Model.email</p>
+            <p><strong>Role:</strong> @Model.roleName</p>
+            <p><strong>Department:</strong> @Model.departmentName</p>
+        </div>
+    </div>
+
+    <div class="text-center mt-4">
+        <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Back to Home</a>
+    </div>
+</div>
+
