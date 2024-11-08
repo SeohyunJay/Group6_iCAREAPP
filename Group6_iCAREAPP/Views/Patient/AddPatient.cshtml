@@ -1,63 +1,77 @@
 ﻿@model Group6_iCAREAPP.Models.PatientRecord
 
+<!-- Page title -->
 <h2>Add New Patient</h2>
 
+<!-- Back button for navigation -->
 <button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
 
+<!-- Form to add a new patient -->
 @using (Html.BeginForm())
 {
-    @Html.AntiForgeryToken()
+    @Html.AntiForgeryToken() <!-- CSRF protection -->
 
+    <!-- Input field for patient name -->
     <div class="form-group">
-        @Html.LabelFor(model => model.name)
-        @Html.TextBoxFor(model => model.name, new { @class = "form-control", placeholder = "Enter patient name" })
+        @Html.LabelFor(model => model.name) <!-- Label for patient name -->
+        @Html.TextBoxFor(model => model.name, new { @class = "form-control", placeholder = "Enter patient name" }) <!-- Text box for input -->
     </div>
 
+    <!-- Input field for address -->
     <div class="form-group">
-        @Html.LabelFor(model => model.address)
-        @Html.TextBoxFor(model => model.address, new { @class = "form-control", placeholder = "Enter address" })
+        @Html.LabelFor(model => model.address) <!-- Label for address -->
+        @Html.TextBoxFor(model => model.address, new { @class = "form-control", placeholder = "Enter address" }) <!-- Text box for input -->
     </div>
 
+    <!-- Input field for date of birth -->
     <div class="form-group">
-        @Html.LabelFor(model => model.dateOfBirth)
-        @Html.TextBoxFor(model => model.dateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+        @Html.LabelFor(model => model.dateOfBirth) <!-- Label for date of birth -->
+        @Html.TextBoxFor(model => model.dateOfBirth, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" }) <!-- Date picker for input -->
     </div>
 
+    <!-- Input field for height -->
     <div class="form-group">
-        @Html.LabelFor(model => model.height)
-        @Html.TextBoxFor(model => model.height, new { @class = "form-control", placeholder = "Enter height in cm" })
+        @Html.LabelFor(model => model.height) <!-- Label for height -->
+        @Html.TextBoxFor(model => model.height, new { @class = "form-control", placeholder = "Enter height in cm" }) <!-- Text box for input -->
     </div>
 
+    <!-- Input field for weight -->
     <div class="form-group">
-        @Html.LabelFor(model => model.weight)
-        @Html.TextBoxFor(model => model.weight, new { @class = "form-control", placeholder = "Enter weight in kg" })
+        @Html.LabelFor(model => model.weight) <!-- Label for weight -->
+        @Html.TextBoxFor(model => model.weight, new { @class = "form-control", placeholder = "Enter weight in kg" }) <!-- Text box for input -->
     </div>
 
+    <!-- Input field for blood group -->
     <div class="form-group">
-        @Html.LabelFor(model => model.bloodGroup)
-        @Html.TextBoxFor(model => model.bloodGroup, new { @class = "form-control", placeholder = "Enter blood group" })
+        @Html.LabelFor(model => model.bloodGroup) <!-- Label for blood group -->
+        @Html.TextBoxFor(model => model.bloodGroup, new { @class = "form-control", placeholder = "Enter blood group" }) <!-- Text box for input -->
     </div>
 
+    <!-- Input field for bed ID -->
     <div class="form-group">
-        @Html.LabelFor(model => model.bedID)
-        @Html.TextBoxFor(model => model.bedID, new { @class = "form-control", placeholder = "Enter bed ID" })
+        @Html.LabelFor(model => model.bedID) <!-- Label for bed ID -->
+        @Html.TextBoxFor(model => model.bedID, new { @class = "form-control", placeholder = "Enter bed ID" }) <!-- Text box for input -->
     </div>
 
+    <!-- Input field for treatment area -->
     <div class="form-group">
-        @Html.LabelFor(model => model.treatmentArea)
-        @Html.TextBoxFor(model => model.treatmentArea, new { @class = "form-control", placeholder = "Enter treatment area" })
+        @Html.LabelFor(model => model.treatmentArea) <!-- Label for treatment area -->
+        @Html.TextBoxFor(model => model.treatmentArea, new { @class = "form-control", placeholder = "Enter treatment area" }) <!-- Text box for input -->
     </div>
 
+    <!-- Dropdown for selecting GeoCode -->
     <div class="form-group">
-        <label for="geoID">GeoCode:</label>
+        <label for="geoID">GeoCode:</label> <!-- Label for GeoCode -->
         <select class="form-control" id="geoID" name="geoID">
-            <option value="">Select GeoCode</option>
+            <option value="">Select GeoCode</option> <!-- Default option -->
             @foreach (var geo in ViewBag.GeoCodes as SelectList)
             {
                 <option value="@geo.Value">@geo.Text</option>
+ <!-- Options for GeoCodes -->
             }
         </select>
     </div>
 
+    <!-- Submit button to add the patient -->
     <button type="submit" class="btn btn-primary">Add Patient</button>
 }

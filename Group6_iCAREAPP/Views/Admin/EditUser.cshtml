@@ -1,49 +1,65 @@
 ﻿@model Group6_iCAREAPP.Models.iCAREUser
 
 @{
-    ViewBag.Title = "Edit User";
+    ViewBag.Title = "Edit User"; // Sets the page title to "Edit User"
 }
 
-<h2>Edit User</h2>
-
+<h2>Edit User</h2> <!-- Page heading -->
+<!-- Button to navigate back to the previous page -->
 <button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
 
+<!-- Form for editing user details -->
 <form action="@Url.Action("EditUser", "Admin")" method="post">
-    @Html.AntiForgeryToken()
+    @Html.AntiForgeryToken() <!-- CSRF protection token -->
+    <!-- Input field for the username -->
     <div class="form-group">
         <label for="userName">Username:</label>
         <input type="text" class="form-control" id="userName" name="userName" value="@Model.userName" required />
     </div>
+
+    <!-- Input field for the full name -->
     <div class="form-group">
         <label for="name">Full Name:</label>
         <input type="text" class="form-control" id="name" name="name" value="@Model.name" required />
     </div>
+
+    <!-- Input field for the email -->
     <div class="form-group">
         <label for="email">Email:</label>
         <input type="email" class="form-control" id="email" name="email" value="@Model.email" required />
     </div>
+
+    <!-- Dropdown list for selecting the user role -->
     <div class="form-group">
         <label for="roleID">Role:</label>
         <select class="form-control" id="roleID" name="selectedRoleID">
             @foreach (var role in ViewBag.Roles as SelectList)
             {
-                <option value="@role.Value" @(Model.roleID == role.Value ? "selected" : "")>@role.Text</option>
+            <option value="@role.Value" @(Model.roleID == role.Value ? "selected" : "")>@role.Text</option> <!-- Option with selected state if it matches Model -->
             }
         </select>
     </div>
+
+    <!-- Dropdown list for selecting the department -->
     <div class="form-group">
         <label for="geoID">Department:</label>
         <select class="form-control" id="geoID" name="selectedGeoID">
             @foreach (var department in ViewBag.Departments as SelectList)
             {
-                <option value="@department.Value" @(Model.geoID == department.Value ? "selected" : "")>@department.Text</option>
+            <option value="@department.Value" @(Model.geoID == department.Value ? "selected" : "")>@department.Text</option> <!-- Option with selected state if it matches Model -->
             }
         </select>
     </div>
+
+    <!-- Input field for the contract expiration date -->
     <div class="form-group">
         <label for="contractExpirationDate">Contract Expiration Date:</label>
         <input type="date" class="form-control" id="contractExpirationDate" name="contractExpirationDate" value="@ViewBag.ContractExpirationDate" required />
     </div>
+
+    <!-- Hidden input to pass the user ID -->
     <input type="hidden" name="ID" value="@Model.ID" />
+
+    <!-- Submit button to save the changes -->
     <button type="submit" class="btn btn-primary">Save Changes</button>
 </form>

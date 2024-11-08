@@ -1,8 +1,10 @@
 ﻿@model IEnumerable<Group6_iCAREAPP.Models.DisplayPaletteViewModel>
 
-<h2>Display Palette</h2>
+<h2>Display Palette</h2> <!-- Page heading for the display palette -->
+<!-- Button to navigate back to the previous page -->
 <button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
 
+<!-- Search form for filtering patients or documents -->
 <form method="get" action="@Url.Action("DisplayPalette", "Document")" class="form-inline mb-3">
     <div class="form-group mr-2">
         <input type="text" name="searchQuery" placeholder="Search by patient or document name..." value="@Request.QueryString["searchQuery"]" class="form-control" />
@@ -10,37 +12,44 @@
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
+<!-- Table displaying patient information and their documents -->
 <table class="table table-striped mt-3">
     <thead>
         <tr>
-            <th>Patient Name</th>
-            <th>Date of Birth</th>
-            <th>Documents</th>
+            <th>Patient Name</th> <!-- Column for patient name -->
+            <th>Date of Birth</th> <!-- Column for patient date of birth -->
+            <th>Documents</th> <!-- Column for document actions -->
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>@item.PatientName</td>
-                <td>@(item.dateOfBirth.HasValue ? item.dateOfBirth.Value.ToString("MM/dd/yyyy") : "N/A")</td>
-                <td>
-                    @if (item.PatientDocuments != null && item.PatientDocuments.Any())
-                    {
-                        <a href="@Url.Action("ViewPatientDocuments", "Document", new { patientID = item.PatientID.ToString() })" class="btn btn-info">
-                            View Documents
-                        </a>
-                    }
-                    else
-                    {
-                        <span>No documents</span>
-                    }
-                </td>
-            </tr>
+        <tr>
+            <!-- Display patient name -->
+            <td>@item.PatientName</td>
+
+            <!-- Display formatted date of birth or 'N/A' if not available -->
+            <td>@(item.dateOfBirth.HasValue ? item.dateOfBirth.Value.ToString("MM/dd/yyyy") : "N/A")</td>
+
+            <!-- Check if patient has documents and provide action link -->
+            <td>
+                @if (item.PatientDocuments != null && item.PatientDocuments.Any())
+                {
+                    <a href="@Url.Action("ViewPatientDocuments", "Document", new { patientID = item.PatientID.ToString() })" class="btn btn-info">
+                        View Documents <!-- Button to view documents -->
+                    </a>
+                }
+                else
+                {
+                    <span>No documents</span> <!-- Message if no documents are available -->
+                }
+            </td>
+        </tr>
         }
     </tbody>
 </table>
 
+<!-- Button to add a new document -->
 <div class="mb-3">
     <a href="@Url.Action("AddDocument", "Document")" class="btn btn-success">Add Document</a>
 </div>

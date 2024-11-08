@@ -1,43 +1,46 @@
 ﻿@model Group6_iCAREAPP.Models.DisplayPaletteViewModel
 
 @{
-    ViewData["Title"] = "View Patient Documents";
+    ViewData["Title"] = "View Patient Documents"; <!-- Sets the title of the page -->
 }
 
-<h2>@ViewData["Title"]</h2>
-
+<h2>@ViewData["Title"]</h2> <!-- Main heading of the page -->
+<!-- Section displaying patient information -->
 <div class="patient-info">
     <h4>Patient Information</h4>
-    <p><strong>Patient Name:</strong> @Model.PatientName</p>
-    <p><strong>Date of Birth:</strong> @(Model.dateOfBirth.HasValue ? Model.dateOfBirth.Value.ToString("MM/dd/yyyy") : "N/A")</p>
+    <p><strong>Patient Name:</strong> @Model.PatientName</p> <!-- Displays patient name -->
+    <p><strong>Date of Birth:</strong> @(Model.dateOfBirth.HasValue ? Model.dateOfBirth.Value.ToString("MM/dd/yyyy") : "N/A")</p> <!-- Displays patient date of birth or 'N/A' -->
 </div>
 
+<!-- Section heading for documents -->
 <h4>Documents</h4>
 <table class="table table-striped mt-3">
     <thead>
         <tr>
-            <th>Document Name</th>
-            <th>Creation Date</th>
-            <th>Created By</th>
-            <th>Modification Date</th>
-            <th>Modified By</th>
-            <th>Document Type</th>
-            <th>Actions</th>
+            <th>Document Name</th> <!-- Column for document name -->
+            <th>Creation Date</th> <!-- Column for creation date -->
+            <th>Created By</th> <!-- Column for created by -->
+            <th>Modification Date</th> <!-- Column for modification date -->
+            <th>Modified By</th> <!-- Column for modified by -->
+            <th>Document Type</th> <!-- Column for document type -->
+            <th>Actions</th> <!-- Column for action buttons -->
         </tr>
     </thead>
     <tbody>
+        <!-- Checks if there are documents associated with the patient -->
         @if (Model.PatientDocuments != null && Model.PatientDocuments.Any())
         {
             foreach (var document in Model.PatientDocuments)
             {
                 <tr>
-                    <td>@document.DocName</td>
-                    <td>@(document.DateOfCreation.HasValue ? document.DateOfCreation.Value.ToString("MM/dd/yyyy") : "N/A")</td>
-                    <td>@document.CreatedBy</td>
-                    <td>@(document.ModificationDate.HasValue ? document.ModificationDate.Value.ToString("MM/dd/yyyy") : "N/A")</td>
-                    <td>@document.ModifiedBy</td>
-                    <td>@document.DocumentType</td>
+                    <td>@document.DocName</td> <!-- Displays document name -->
+                    <td>@(document.DateOfCreation.HasValue ? document.DateOfCreation.Value.ToString("MM/dd/yyyy") : "N/A")</td> <!-- Displays creation date or 'N/A' -->
+                    <td>@document.CreatedBy</td> <!-- Displays who created the document -->
+                    <td>@(document.ModificationDate.HasValue ? document.ModificationDate.Value.ToString("MM/dd/yyyy") : "N/A")</td> <!-- Displays modification date or 'N/A' -->
+                    <td>@document.ModifiedBy</td> <!-- Displays who modified the document -->
+                    <td>@document.DocumentType</td> <!-- Displays the document type -->
                     <td>
+                        <!-- Action buttons for view, edit, and delete with confirmation for delete -->
                         <a href="@Url.Action("ViewDocument", "Document", new { docID = document.DocID })" class="btn btn-info">View</a>
                         <a href="@Url.Action("EditDocument", "Document", new { docID = document.DocID })" class="btn btn-warning btn-sm">Edit</a>
                         <a href="@Url.Action("DeleteDocument", "Document", new { docID = document.DocID })" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this document?')">Delete</a>
@@ -47,6 +50,7 @@
         }
         else
         {
+            <!-- Message if no documents are found -->
             <tr>
                 <td colspan="7" class="text-center">No documents found for this patient.</td>
             </tr>
@@ -54,8 +58,10 @@
     </tbody>
 </table>
 
+<!-- Button to add a new document -->
 <div class="mb-3">
     <a href="@Url.Action("AddDocument", "Document")" class="btn btn-success">Add Document</a>
 </div>
 
+<!-- Button to go back to the patient list -->
 <a href="@Url.Action("DisplayPalette", "Document")" class="btn btn-secondary mt-3">Back to Patient List</a>

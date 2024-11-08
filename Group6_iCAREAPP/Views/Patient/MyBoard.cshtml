@@ -1,11 +1,15 @@
 ﻿@model IEnumerable<Group6_iCAREAPP.Models.PatientRecord>
 
+<!-- Page title -->
 <h2>My Board</h2>
 
+<!-- Back button for navigation -->
 <button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
 
+<!-- Display logged-in user's assigned patients -->
 <p>@Session["LoggedUserName"], your assigned patients are:</p>
 
+<!-- Table displaying the list of assigned patients -->
 <table class="table table-striped">
     <thead>
         <tr>
@@ -24,9 +28,11 @@
         </tr>
     </thead>
     <tbody>
+        <!-- Iterate through the patient records and display each patient's details -->
         @foreach (var patient in Model)
         {
             <tr>
+                <!-- Displaying patient details -->
                 <td>@patient.patientID</td>
                 <td>@patient.name</td>
                 <td>@patient.address</td>
@@ -39,10 +45,11 @@
                 <td>@patient.numOfNurses</td>
                 <td>@(patient.hasDoctor.GetValueOrDefault() ? "Yes" : "No")</td>
                 <td>
+                    <!-- Form to deassign a patient -->
                     @using (Html.BeginForm("DeassignPatient", "Patient", FormMethod.Post))
                     {
-                        @Html.AntiForgeryToken()
-                        @Html.Hidden("patientID", patient.patientID)
+                        @Html.AntiForgeryToken() <!-- CSRF protection -->
+                        @Html.Hidden("patientID", patient.patientID) <!-- Hidden field for patient ID -->
                         <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to deassign this patient?');">Deassign</button>
                     }
                 </td>

@@ -1,54 +1,63 @@
 ﻿@model IEnumerable<Group6_iCAREAPP.Models.PatientRecord>
 
+<!-- Page title -->
 <h2>iCARE Board (Assign Patients)</h2>
 
+<!-- Back button for navigation -->
 <button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
 
+<!-- Form for filtering patients by geographic unit -->
 <form method="get" action="@Url.Action("AssignPatient", "Patient")">
     <label for="geoFilter">Filter by Geographic Unit:</label>
     <select id="geoFilter" name="selectedGeoID" onchange="this.form.submit()">
         <option value="">All Locations</option>
         @foreach (var geo in ViewBag.GeoCodes as SelectList)
         {
-            <option value="@geo.Value" @(ViewBag.SelectedGeoID == geo.Value ? "selected" : "")>@geo.Text</option>
+        <option value="@geo.Value" @(ViewBag.SelectedGeoID == geo.Value ? "selected" : "")>@geo.Text</option>
         }
     </select>
 </form>
 
+<!-- Form for assigning patients -->
 <form action="@Url.Action("AssignPatient", "Patient")" method="post">
-    @Html.AntiForgeryToken()
+    @Html.AntiForgeryToken() <!-- CSRF protection token -->
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Select</th>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Geolocation ID</th>
-                <th>Number of Nurses</th>
-                <th>Has Doctor</th>
+                <th>Select</th> <!-- Checkbox column for selecting patients -->
+                <th>ID</th> <!-- Column for patient ID -->
+                <th>Name</th> <!-- Column for patient name -->
+                <th>Geolocation ID</th> <!-- Column for geographic location -->
+                <th>Number of Nurses</th> <!-- Column for the number of nurses assigned -->
+                <th>Has Doctor</th> <!-- Column indicating if the patient has a doctor -->
             </tr>
         </thead>
         <tbody>
+            <!-- Loop to populate table rows with patient data -->
             @foreach (var patient in Model)
             {
                 <tr>
-                    <td><input type="checkbox" name="selectedPatients" value="@patient.patientID" /></td>
-                    <td>@patient.patientID</td>
-                    <td>@patient.name</td>
-                    <td>@patient.geoID</td>
-                    <td>@patient.numOfNurses</td>
-                    <td>@(patient.hasDoctor.GetValueOrDefault() ? "Yes" : "No")</td>
+                    <td><input type="checkbox" name="selectedPatients" value="@patient.patientID" /></td> <!-- Checkbox for selecting patient -->
+                    <td>@patient.patientID</td> <!-- Display patient ID -->
+                    <td>@patient.name</td> <!-- Display patient name -->
+                    <td>@patient.geoID</td> <!-- Display geographic ID -->
+                    <td>@patient.numOfNurses</td> <!-- Display the number of nurses -->
+                    <td>@(patient.hasDoctor.GetValueOrDefault() ? "Yes" : "No")</td> <!-- Display if the patient has a doctor -->
                 </tr>
             }
         </tbody>
     </table>
+    <!-- Button to submit the form for assigning selected patients -->
     <button type="submit" class="btn btn-primary">Assign</button>
 </form>
 
+<!-- Display success message if available -->
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">@TempData["SuccessMessage"]</div>
 }
+
+<!-- Display error message if available -->
 @if (TempData["ErrorMessage"] != null)
 {
     <div class="alert alert-danger">@TempData["ErrorMessage"]</div>

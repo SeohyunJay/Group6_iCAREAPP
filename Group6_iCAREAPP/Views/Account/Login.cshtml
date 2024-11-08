@@ -80,7 +80,7 @@
 
             @* Form to submit login credentials, posts to the Account controller's Login action *@
             <form action="@Url.Action("Login", "Account")" method="post">
-                @Html.AntiForgeryToken() // Protects against CSRF attacks
+                @Html.AntiForgeryToken()
 
                 <div class="form-group">
                     <label for="username">Username:</label>

@@ -1,20 +1,23 @@
 ﻿@model Group6_iCAREAPP.Models.GeoCodes
 
-<h2>Add Department</h2>
-
+<h2>Add Department</h2> <!-- Page heading for adding a department -->
+<!-- Button to navigate back to the previous page -->
 <button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
 
+<!-- Form to submit a new department -->
 <form action="@Url.Action("AddDepartment", "Admin")" method="post">
-    @Html.AntiForgeryToken()
-
+    @Html.AntiForgeryToken() <!-- CSRF protection token -->
+    <!-- Input field for department name -->
     <div class="form-group">
         <label for="description">Department Name:</label>
         @Html.TextBoxFor(model => model.description, new { @class = "form-control", required = "required" })
     </div>
 
+    <!-- Submit button to add the department -->
     <button type="submit" class="btn btn-primary">Add Department</button>
 </form>
 
+<!-- Display success message if present in TempData -->
 @if (TempData["SuccessMessage"] != null)
 {
     <div class="alert alert-success">
@@ -22,28 +25,30 @@
     </div>
 }
 
-<h3>Existing Departments</h3>
+<h3>Existing Departments</h3> <!-- Subheading for the list of existing departments -->
+<!-- Table displaying existing departments -->
 <table class="table table-striped mt-3">
     <thead>
         <tr>
-            <th>Department ID</th>
-            <th>Department Name</th>
-            <th>Actions</th>
+            <th>Department ID</th> <!-- Column header for department ID -->
+            <th>Department Name</th> <!-- Column header for department name -->
+            <th>Actions</th> <!-- Column header for actions -->
         </tr>
     </thead>
     <tbody>
         @foreach (var department in ViewBag.Departments)
         {
-            <tr>
-                <td>@department.geoID</td>
-                <td>@department.description</td>
-                <td>
-                    <form action="@Url.Action("DeleteDepartment", "Admin", new { id = department.geoID })" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this department?');">
-                        @Html.AntiForgeryToken()
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
+        <tr>
+            <td>@department.geoID</td> <!-- Display department ID -->
+            <td>@department.description</td> <!-- Display department name -->
+            <td>
+                <!-- Form to delete a department with a confirmation prompt -->
+                <form action="@Url.Action("DeleteDepartment", "Admin", new { id = department.geoID })" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this department?');">
+                    @Html.AntiForgeryToken() <!-- CSRF protection token -->
+                    <button type="submit" class="btn btn-danger">Delete</button> <!-- Delete button -->
+                </form>
+            </td>
+        </tr>
         }
     </tbody>
 </table>

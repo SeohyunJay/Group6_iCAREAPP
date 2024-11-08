@@ -8,6 +8,7 @@
 
 @if (Model.RoleID != null)
 {
+    // If the user is an Admin (Role ID = "1")
     if (Model.RoleID == "1") // Admin
     {
         <p>Your role: <strong>Admin</strong></p>
@@ -15,6 +16,7 @@
 
         <h2>Users</h2>
 
+        // Table to display all users if the current user is an Admin
         <table class="table table-striped mt-3">
             <thead>
                 <tr>
@@ -33,6 +35,7 @@
                 }
                 else
                 {
+                    // Iterate through the list of users and display their details
                     foreach (var user in Model.Users)
                     {
                         <tr>
@@ -46,7 +49,7 @@
             </tbody>
         </table>
     }
-    else
+    else // If the user is a Doctor (Role ID = "2") or Nurse (Role ID = "3")
     {
         <p>Your role: <strong>@(Model.RoleID == "2" ? "Doctor" : "Nurse")</strong></p>
 
@@ -62,8 +65,10 @@
             <a href="@Url.Action("Index", new { sortOrder = ViewBag.SortByBloodGroup })">Blood Group</a>
         </p>
 
+        // Check if there are any patients in the list
         if (Model.Patients != null && Model.Patients.Any())
         {
+            // Display the patient list in a table format
             <table class="table table-striped mt-3">
                 <thead>
                     <tr>
@@ -94,11 +99,13 @@
         }
         else
         {
+            // Display a message if no patients are found
             <p>No patients found for your department.</p>
         }
     }
 }
 else
 {
+    // Message for users who are not logged in
     <p>You are not logged in. Please log in to view your iCARE Board.</p>
 }

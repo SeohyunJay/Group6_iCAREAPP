@@ -6,11 +6,16 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Basic meta tags for responsive design -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - iCARE</title>
+
+    <!-- Including CSS and modernizr scripts -->
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+
+    <!-- Custom styling for body, container, navbar, and footer -->
     <style>
         body {
             background: linear-gradient(to bottom, #cceeff, #e6f7ff);
@@ -24,7 +29,6 @@
         .container {
             margin-top: 0 auto;
         }
-
 
         .navbar {
             width: 100%;
@@ -46,27 +50,34 @@
 </head>
 
 <body>
+    <!-- Navigation bar -->
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
         <div class="container">
+            <!-- Home link -->
             @Html.ActionLink("iCARE", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+
+            <!-- Button for collapsible menu -->
+            <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Toggle navigation" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
+
+            <!-- Collapsible navbar content -->
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
+                    <!-- Home link -->
                     <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, new { @class = "nav-link" })</li>
 
+                    <!-- Dynamic links based on user role -->
                     @if (!string.IsNullOrEmpty(roleID))
                     {
-                        // Admin (RoleID = 1)
+                        // Admin role (RoleID = 1)
                         if (roleID == "1")
                         {
                             <li>@Html.ActionLink("Manage Users", "ManageUsers", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
                             <li>@Html.ActionLink("Add Role", "AddRole", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
                             <li>@Html.ActionLink("Add Department", "AddDepartment", "Admin", new { area = "" }, new { @class = "nav-link" })</li>
                         }
-                        // Doctor (RoleID = 2)
+                        // Doctor role (RoleID = 2)
                         else if (roleID == "2")
                         {
                             <li>@Html.ActionLink("Manage Patients", "ManagePatient", "Patient", new { area = "" }, new { @class = "nav-link" })</li>
@@ -74,7 +85,7 @@
                             <li>@Html.ActionLink("Display Palette", "DisplayPalette", "Document", new { area = "" }, new { @class = "nav-link" })</li>
                             <li>@Html.ActionLink("MyBoard", "MyBoard", "Patient", new { area = "" }, new { @class = "nav-link" })</li>
                         }
-                        // Nurse (RoleID = 3)
+                        // Nurse role (RoleID = 3)
                         else if (roleID == "3")
                         {
                             <li>@Html.ActionLink("Manage Patients", "ManagePatient", "Patient", new { area = "" }, new { @class = "nav-link" })</li>
@@ -84,6 +95,7 @@
                         }
                     }
 
+                    <!-- General links for all logged-in users -->
                     @if (Session["LoggedUser"] != null)
                     {
                         <li>@Html.ActionLink("MyInfo", "MyInfo", "Account", new { area = "" }, new { @class = "nav-link" })</li>
@@ -91,10 +103,11 @@
                     <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
 
+                <!-- Logout button if user is logged in -->
                 @if (Session["LoggedUser"] != null)
                 {
                     <form action="@Url.Action("Logout", "Account")" method="post" style="display: inline;">
-                        @Html.AntiForgeryToken()
+                        @Html.AntiForgeryToken() <!-- CSRF token for security -->
                         <button type="submit" class="btn btn-danger">Logout</button>
                     </form>
                 }
@@ -102,17 +115,20 @@
         </div>
     </nav>
 
+    <!-- Main content container -->
     <div class="container body-content">
-        @RenderBody()
+        @RenderBody() <!-- Placeholder for content -->
         <hr />
 
+        <!-- Footer -->
         <footer class="footer">
             <p>&copy; @DateTime.Now.Year - iCARE</p>
         </footer>
     </div>
 
+    <!-- JavaScript includes -->
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    @RenderSection("scripts", required: false) <!-- Additional scripts section -->
 </body>
 </html>

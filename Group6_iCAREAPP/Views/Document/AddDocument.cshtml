@@ -1,25 +1,29 @@
 ﻿@model Group6_iCAREAPP.Models.DocumentMetadata
 
-<h2>Add Document</h2>
-
+<h2>Add Document</h2> <!-- Page heading for adding a document -->
+<!-- Button to navigate back to the previous page -->
 <button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
 
+<!-- Form for adding a new document with file upload -->
 @using (Html.BeginForm("AddDocument", "Document", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
-    @Html.AntiForgeryToken()
+    @Html.AntiForgeryToken() <!-- CSRF protection token -->
 
+    <!-- Input field for the document name -->
     <div class="form-group">
         <label for="docName">Document Name:</label>
         @Html.TextBoxFor(model => model.docName, new { @class = "form-control", required = "required" })
         @Html.ValidationMessageFor(model => model.docName, "", new { @class = "text-danger" })
     </div>
 
+    <!-- Dropdown list for selecting a patient -->
     <div class="form-group">
         <label for="patientID">Patient:</label>
         @Html.DropDownList("patientID", ViewBag.Patients as SelectList, "Select a Patient", new { @class = "form-control", required = "required" })
         @Html.ValidationMessageFor(model => model.patientID, "", new { @class = "text-danger" })
     </div>
 
+    <!-- Dropdown list for selecting the document type -->
     <div class="form-group">
         <label for="documentType">Document Type:</label>
         @Html.DropDownList("documentType", new SelectList(new List<SelectListItem>
@@ -31,17 +35,19 @@
         }, "Value", "Text"), "Select Document Type", new { @class = "form-control", required = "required" })
     </div>
 
+    <!-- Dropdown list for selecting a drug -->
     <div class="form-group">
         <label for="drugID">Select Drug:</label>
         <select class="form-control" name="selectedDrugID" id="drugID">
             <option value="">-- Select a Drug --</option>
             @foreach (var drug in ViewBag.Drugs)
             {
-                <option value="@drug.Value">@drug.Text</option>
+            <option value="@drug.Value">@drug.Text</option> <!-- Displays each drug as an option -->
             }
         </select>
     </div>
 
+    <!-- File upload section -->
     <div class="file-upload-wrapper" onclick="document.getElementById('fileInput').click()">
         <input type="file" id="fileInput" name="uploadedFile" class="file-input" onchange="displayFileName()" required />
         <div class="upload-area">
@@ -49,11 +55,13 @@
         </div>
     </div>
 
+    <!-- Submit button -->
     <div class="form-group">
         <button type="submit" class="btn btn-primary">Add Document</button>
     </div>
 }
 
+<!-- Styling for the file upload section -->
 <style>
     .file-upload-wrapper {
         margin-top: 20px;
@@ -79,6 +87,7 @@
     }
 </style>
 
+<!-- JavaScript for handling file drag-and-drop and displaying file name -->
 <script>
     const uploadArea = document.querySelector('.file-upload-wrapper');
     const fileInput = document.getElementById('fileInput');
@@ -86,26 +95,26 @@
 
     uploadArea.addEventListener('dragover', (e) => {
         e.preventDefault();
-        uploadArea.classList.add('dragging');
+        uploadArea.classList.add('dragging'); // Adds highlighting when dragging over the area
     });
 
     uploadArea.addEventListener('dragleave', () => {
-        uploadArea.classList.remove('dragging');
+        uploadArea.classList.remove('dragging'); // Removes highlighting when dragging leaves the area
     });
 
     uploadArea.addEventListener('drop', (e) => {
         e.preventDefault();
         uploadArea.classList.remove('dragging');
         const files = e.dataTransfer.files;
-        fileInput.files = files;
-        displayFileName();
+        fileInput.files = files; // Sets the dropped files to the input
+        displayFileName(); // Displays the file name
     });
 
     function displayFileName() {
         if (fileInput.files.length > 0) {
-            uploadText.textContent = `File selected: ${fileInput.files[0].name}`;
+            uploadText.textContent = `File selected: ${fileInput.files[0].name}`; // Shows the selected file name
         } else {
-            uploadText.textContent = 'Drag a file here, or Choose a file to upload';
+            uploadText.textContent = 'Drag a file here, or Choose a file to upload'; // Resets text if no file selected
         }
     }
 </script>

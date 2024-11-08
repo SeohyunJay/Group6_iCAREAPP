@@ -1,48 +1,64 @@
 ﻿@model Group6_iCAREAPP.Models.iCAREUser
 
 @{
-    ViewBag.Title = "Add New User";
+    ViewBag.Title = "Add New User"; // Sets the page title to "Add New User"
 }
 
-<h2>Add New User</h2>
-
+<h2>Add New User</h2> <!-- Page heading -->
+<!-- Button to navigate back to the previous page -->
 <button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
 
+<!-- Form for adding a new user -->
 <form action="@Url.Action("AddUser", "Admin")" method="post">
-    @Html.AntiForgeryToken()
+    @Html.AntiForgeryToken() <!-- CSRF protection token -->
+    <!-- Input field for the username -->
     <div class="form-group">
         <label for="userName">Username:</label>
         <input type="text" class="form-control" id="userName" name="userName" required />
     </div>
+
+    <!-- Input field for the full name -->
     <div class="form-group">
         <label for="name">Full Name:</label>
         <input type="text" class="form-control" id="name" name="name" required />
     </div>
+
+    <!-- Input field for the email -->
     <div class="form-group">
         <label for="email">Email:</label>
         <input type="email" class="form-control" id="email" name="email" required />
     </div>
+
+    <!-- Input field for the password -->
     <div class="form-group">
         <label for="password">Password:</label>
         <input type="password" class="form-control" id="password" name="password" required />
     </div>
+
+    <!-- Dropdown list for selecting the user role -->
     <div class="form-group">
         <label for="roleID">Role:</label>
         <select class="form-control" id="roleID" name="selectedRoleID">
             @foreach (var role in ViewBag.Roles as SelectList)
             {
-                <option value="@role.Value">@role.Text</option>
+            <option value="@role.Value">@role.Text</option> <!-- Option element for each role -->
             }
         </select>
     </div>
+
+    <!-- Dropdown list for selecting the department -->
     <div class="form-group">
         <label for="geoID">Department:</label>
         @Html.DropDownList("selectedGeoID", ViewBag.Departments as SelectList, "Select a Department", new { @class = "form-control", required = "required" })
     </div>
+
+    <!-- Input field for the contract expiration date -->
     <div class="form-group">
         <label for="contractExpirationDate">Contract Expiration Date:</label>
         <input type="date" class="form-control" id="contractExpirationDate" name="contractExpirationDate"
                value="@Model.contractExpirationDate?.ToString(" yyyy-MM-dd")" />
     </div>
+
+    <!-- Submit button for the form -->
     <button type="submit" class="btn btn-primary">Add User</button>
 </form>

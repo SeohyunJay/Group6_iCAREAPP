@@ -1,27 +1,33 @@
 ﻿@model Group6_iCAREAPP.Models.LoginUserModel
 
 @{
-    ViewBag.Title = "MyInfo";
+    ViewBag.Title = "MyInfo"; // Sets the page title to "MyInfo"
 }
 
 <div class="container mt-5">
     <h2 class="text-center mb-4">My Information</h2>
 
+    <!-- Card to display user details -->
     <div class="card mx-auto" style="max-width: 600px;">
         <div class="card-header bg-primary text-white">
             <h5 class="mb-0">User Details</h5>
         </div>
         <div class="card-body">
+            <!-- Display user's name -->
             <p><strong>Name:</strong> @Model.name</p>
+            <!-- Display user's username -->
             <p><strong>Username:</strong> @Model.userName</p>
+            <!-- Display user's email -->
             <p><strong>Email:</strong> @Model.email</p>
+            <!-- Display user's role -->
             <p><strong>Role:</strong> @Model.roleName</p>
+            <!-- Display user's department -->
             <p><strong>Department:</strong> @Model.departmentName</p>
         </div>
     </div>
 
+    <!-- Button to navigate back to the home page -->
     <div class="text-center mt-4">
         <a href="@Url.Action("Index", "Home")" class="btn btn-secondary">Back to Home</a>
     </div>
 </div>
-
