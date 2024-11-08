@@ -50,7 +50,7 @@ namespace Group6_iCAREAPP.Controllers
 
         // POST: Adds a new patient to the database
         [HttpPost]
-        [ValidateAntiForgeryToken] // Prevents CSRF attacks
+        [ValidateAntiForgeryToken]
         public ActionResult AddPatient(PatientRecord patient)
         {
             if (ModelState.IsValid)
@@ -96,7 +96,7 @@ namespace Group6_iCAREAPP.Controllers
 
             if (patient == null)
             {
-                return HttpNotFound(); // Return 404 if patient not found
+                return HttpNotFound(); // Return if patient not found
             }
 
             // Populate ViewBag with geoCodes for dropdown list
@@ -108,7 +108,7 @@ namespace Group6_iCAREAPP.Controllers
 
         // POST: Updates an existing patient record
         [HttpPost]
-        [ValidateAntiForgeryToken] // Prevents CSRF attacks
+        [ValidateAntiForgeryToken]
         public ActionResult EditPatient(PatientRecord patient)
         {
             if (ModelState.IsValid)
@@ -146,7 +146,7 @@ namespace Group6_iCAREAPP.Controllers
 
         // POST: Deletes a patient and related records from the database
         [HttpPost]
-        [ValidateAntiForgeryToken] // Prevents CSRF attacks
+        [ValidateAntiForgeryToken]
         public ActionResult DeletePatient(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -208,7 +208,7 @@ namespace Group6_iCAREAPP.Controllers
 
         // POST: Assigns selected patients to the logged-in worker
         [HttpPost]
-        [ValidateAntiForgeryToken] // Prevents CSRF attacks
+        [ValidateAntiForgeryToken]
         public ActionResult AssignPatient(List<string> selectedPatients)
         {
             string workerID = Session["LoggedUserID"]?.ToString();
@@ -332,7 +332,7 @@ namespace Group6_iCAREAPP.Controllers
 
         // POST: Deassigns a patient from the logged-in worker
         [HttpPost]
-        [ValidateAntiForgeryToken] // Prevents CSRF attacks
+        [ValidateAntiForgeryToken]
         public ActionResult DeassignPatient(string patientID)
         {
             string workerID = Session["LoggedUserID"]?.ToString();

@@ -35,7 +35,7 @@ namespace Group6_iCAREAPP.Controllers
 
         // POST: Updates the treatment record in the database
         [HttpPost]
-        [ValidateAntiForgeryToken] // Prevents CSRF attacks
+        [ValidateAntiForgeryToken]
         public ActionResult EditTreatment(TreatmentRecord treatment)
         {
             if (ModelState.IsValid) // Checks if the form data is valid
