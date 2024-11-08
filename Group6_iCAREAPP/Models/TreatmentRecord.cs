@@ -11,16 +11,20 @@ namespace Group6_iCAREAPP.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
+    // Class representing a treatment record for a patient in the iCARE system
     public partial class TreatmentRecord
     {
-        public string treatmentID { get; set; }
-        public string patientID { get; set; }
-        public string workerID { get; set; }
-        public string description { get; set; }
-        public System.DateTime treatmentDate { get; set; }
-    
+        public string treatmentID { get; set; } // Unique identifier for the treatment record
+        public string patientID { get; set; } // ID of the patient receiving treatment
+        public string workerID { get; set; } // ID of the worker (e.g., doctor, nurse) providing the treatment
+        public string description { get; set; } // Description of the treatment provided
+        public System.DateTime treatmentDate { get; set; } // Date and time when the treatment occurred
+
+        // Navigation property linking to the associated iCAREWorker entity
         public virtual iCAREWorker iCAREWorker { get; set; }
+
+        // Navigation property linking to the associated PatientRecord entity
         public virtual PatientRecord PatientRecord { get; set; }
     }
 }

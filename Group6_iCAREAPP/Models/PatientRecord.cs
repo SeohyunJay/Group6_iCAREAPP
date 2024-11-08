@@ -11,32 +11,39 @@ namespace Group6_iCAREAPP.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
+    // Class representing a patient's record in the iCARE system
     public partial class PatientRecord
     {
+        // Constructor initializing the collection properties for related documents and treatment records
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public PatientRecord()
         {
-            this.DocumentMetadata = new HashSet<DocumentMetadata>();
-            this.TreatmentRecord = new HashSet<TreatmentRecord>();
+            this.DocumentMetadata = new HashSet<DocumentMetadata>(); // Collection of document records associated with the patient
+            this.TreatmentRecord = new HashSet<TreatmentRecord>(); // Collection of treatment records for the patient
         }
-    
-        public string patientID { get; set; }
-        public string name { get; set; }
-        public string address { get; set; }
-        public System.DateTime dateOfBirth { get; set; }
-        public double height { get; set; }
-        public double weight { get; set; }
-        public string bloodGroup { get; set; }
-        public string bedID { get; set; }
-        public string treatmentArea { get; set; }
-        public string geoID { get; set; }
-        public Nullable<int> numOfNurses { get; set; }
-        public Nullable<bool> hasDoctor { get; set; }
-    
+
+        public string patientID { get; set; } // Unique identifier for the patient
+        public string name { get; set; } // Full name of the patient
+        public string address { get; set; } // Address of the patient
+        public System.DateTime dateOfBirth { get; set; } // Date of birth of the patient
+        public double height { get; set; } // Height of the patient
+        public double weight { get; set; } // Weight of the patient
+        public string bloodGroup { get; set; } // Blood group of the patient
+        public string bedID { get; set; } // Identifier for the patient's bed in the treatment area
+        public string treatmentArea { get; set; } // Area where the patient is receiving treatment
+        public string geoID { get; set; } // Identifier for the geographic location or department
+        public Nullable<int> numOfNurses { get; set; } // Number of nurses assigned to the patient (nullable)
+        public Nullable<bool> hasDoctor { get; set; } // Indicates if a doctor is assigned to the patient (nullable)
+
+        // Navigation property for related document records
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DocumentMetadata> DocumentMetadata { get; set; }
+
+        // Navigation property linking to the GeoCodes entity for geographic location information
         public virtual GeoCodes GeoCodes { get; set; }
+
+        // Navigation property for related treatment records
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TreatmentRecord> TreatmentRecord { get; set; }
     }

@@ -50,7 +50,7 @@
     {
         <p>Your role: <strong>@(Model.RoleID == "2" ? "Doctor" : "Nurse")</strong></p>
 
-        <h3>iCARE Board</h3>
+        <h3>List of Patients</h3>
         <p>
             Sort by:
             <a href="@Url.Action("Index", new { sortOrder = ViewBag.SortByDepartment })">Department</a> |
@@ -70,8 +70,8 @@
                         <th>Patient Name</th>
                         <th>Department</th>
                         <th>Date of Birth</th>
-                        <th>Weight</th>
-                        <th>Height</th>
+                        <th>Weight (kg)</th>
+                        <th>Height (cm)</th>
                         <th>Bed ID</th>
                         <th>Blood Group</th>
                     </tr>

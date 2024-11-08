@@ -8,24 +8,30 @@ namespace Group6_iCAREAPP.Controllers
 {
     public class HomeController : Controller
     {
+        // Database context for accessing database entities
         private Group6_iCAREDBEntities db = new Group6_iCAREDBEntities();
 
+        // GET: Displays the home/index page with patients or users based on role
         public ActionResult Index(string sortOrder)
         {
+            // Check if the user is logged in
             if (Session["LoggedUser"] == null)
             {
-                return RedirectToAction("Login", "Account");
+                return RedirectToAction("Login", "Account"); // Redirects to login if not authenticated
             }
 
+            // Retrieve role information from session
             var roleID = Session["RoleID"]?.ToString();
             var roleName = Session["RoleName"]?.ToString();
 
+            // Check if role information is defined
             if (string.IsNullOrEmpty(roleID) || string.IsNullOrEmpty(roleName))
             {
                 ViewBag.Message = "Your role is not defined. Please contact the administrator.";
-                return View();
+                return View(); // Display a message if role is missing
             }
 
+            // Configure sort options for patient properties
             ViewBag.SortByDepartment = String.IsNullOrEmpty(sortOrder) ? "department_desc" : "";
             ViewBag.SortByPatientName = sortOrder == "PatientName" ? "name_desc" : "PatientName";
             ViewBag.SortByDOB = sortOrder == "dob" ? "dob_desc" : "dob";
@@ -34,8 +40,10 @@ namespace Group6_iCAREAPP.Controllers
             ViewBag.SortByBedID = sortOrder == "bedID" ? "bedID_desc" : "bedID";
             ViewBag.SortByBloodGroup = sortOrder == "bloodGroup" ? "bloodGroup_desc" : "bloodGroup";
 
+            // Retrieve patient records from the database
             List<PatientRecord> patients = db.PatientRecord.ToList();
 
+            // Sort patient records based on the selected sort order
             switch (sortOrder)
             {
                 case "department_desc":
@@ -82,23 +90,26 @@ namespace Group6_iCAREAPP.Controllers
                     break;
             }
 
+            // SQL query to retrieve user details along with their roles and departments
             string sql = @"
                 SELECT u.ID, u.name, u.userName, u.email, r.roleName, g.description as departmentName
                 FROM iCAREUser u
                 LEFT JOIN UserRole r ON u.roleID = r.ID
                 LEFT JOIN GeoCodes g ON u.geoID = g.geoID";
 
+            // Execute the query and return the result as a list of user models
             List<LoginUserModel> users = db.Database.SqlQuery<LoginUserModel>(sql).ToList();
 
+            // Create a view model based on the user's role
             HomeIndexViewModel viewModel;
-            if (roleID == "1")
+            if (roleID == "1") // Check if the user is an admin
             {
                 viewModel = new HomeIndexViewModel
                 {
                     RoleID = roleID,
                     RoleName = roleName,
                     Patients = null,
-                    Users = users
+                    Users = users // Admins see user data
                 };
             }
             else
@@ -107,13 +118,16 @@ namespace Group6_iCAREAPP.Controllers
                 {
                     RoleID = roleID,
                     RoleName = roleName,
-                    Patients = patients,
+                    Patients = patients, // Non-admins see patient data
                     Users = null
                 };
             }
 
+            // Return the view model to the view
             return View(viewModel);
         }
+
+        // GET: Displays the about page
         public ActionResult About()
         {
             return View();

@@ -12,29 +12,34 @@ namespace Group6_iCAREAPP.Models
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
-    
+
+    // DbContext class for accessing and managing the Group6_iCAREDBEntities database
     public partial class Group6_iCAREDBEntities : DbContext
     {
+        // Constructor to initialize the DbContext with the specified connection string
         public Group6_iCAREDBEntities()
             : base("name=Group6_iCAREDBEntities")
         {
         }
-    
+
+        // Override for configuring the model during the DbContext initialization
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            // This exception ensures that the database is not unintentionally used with Code First
             throw new UnintentionalCodeFirstException();
         }
-    
-        public virtual DbSet<DocumentMetadata> DocumentMetadata { get; set; }
-        public virtual DbSet<DrugsDictionary> DrugsDictionary { get; set; }
-        public virtual DbSet<GeoCodes> GeoCodes { get; set; }
-        public virtual DbSet<iCAREAdmin> iCAREAdmin { get; set; }
-        public virtual DbSet<iCAREUser> iCAREUser { get; set; }
-        public virtual DbSet<iCAREWorker> iCAREWorker { get; set; }
-        public virtual DbSet<ModificationHistory> ModificationHistory { get; set; }
-        public virtual DbSet<PatientRecord> PatientRecord { get; set; }
-        public virtual DbSet<TreatmentRecord> TreatmentRecord { get; set; }
-        public virtual DbSet<UserPassword> UserPassword { get; set; }
-        public virtual DbSet<UserRole> UserRole { get; set; }
+
+        // DbSet properties representing tables in the database
+        public virtual DbSet<DocumentMetadata> DocumentMetadata { get; set; } // Table for document metadata
+        public virtual DbSet<DrugsDictionary> DrugsDictionary { get; set; } // Table for drug information
+        public virtual DbSet<GeoCodes> GeoCodes { get; set; } // Table for geographic codes and descriptions
+        public virtual DbSet<iCAREAdmin> iCAREAdmin { get; set; } // Table for admin users
+        public virtual DbSet<iCAREUser> iCAREUser { get; set; } // Table for general user data
+        public virtual DbSet<iCAREWorker> iCAREWorker { get; set; } // Table for worker details
+        public virtual DbSet<ModificationHistory> ModificationHistory { get; set; } // Table for tracking document modifications
+        public virtual DbSet<PatientRecord> PatientRecord { get; set; } // Table for storing patient records
+        public virtual DbSet<TreatmentRecord> TreatmentRecord { get; set; } // Table for treatment history
+        public virtual DbSet<UserPassword> UserPassword { get; set; } // Table for user passwords
+        public virtual DbSet<UserRole> UserRole { get; set; } // Table for user roles
     }
 }

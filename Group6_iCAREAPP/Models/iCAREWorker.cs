@@ -11,19 +11,24 @@ namespace Group6_iCAREAPP.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
+    // Class representing a worker in the iCARE system
     public partial class iCAREWorker
     {
+        // Constructor initializing the collection property
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public iCAREWorker()
         {
-            this.TreatmentRecord = new HashSet<TreatmentRecord>();
+            this.TreatmentRecord = new HashSet<TreatmentRecord>(); // Collection of treatment records associated with the worker
         }
-    
-        public string workerID { get; set; }
-        public string profession { get; set; }
-    
+
+        public string workerID { get; set; } // Unique identifier for the worker
+        public string profession { get; set; } // Profession of the worker (e.g., "Doctor", "Nurse")
+
+        // Navigation property linking to the associated iCAREUser entity
         public virtual iCAREUser iCAREUser { get; set; }
+
+        // Navigation property for the collection of treatment records linked to the worker
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<TreatmentRecord> TreatmentRecord { get; set; }
     }

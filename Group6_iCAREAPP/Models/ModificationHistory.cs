@@ -11,14 +11,16 @@ namespace Group6_iCAREAPP.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
+    // Class representing the modification history of a document
     public partial class ModificationHistory
     {
-        public string modID { get; set; }
-        public string docID { get; set; }
-        public string description { get; set; }
-        public System.DateTime modificationDate { get; set; }
-    
+        public string modID { get; set; } // Unique identifier for the modification record
+        public string docID { get; set; } // ID of the document that was modified
+        public string description { get; set; } // Description of the modification (e.g., "Updated content")
+        public System.DateTime modificationDate { get; set; } // Date and time when the modification was made
+
+        // Navigation property linking to the associated DocumentMetadata entity
         public virtual DocumentMetadata DocumentMetadata { get; set; }
     }
 }

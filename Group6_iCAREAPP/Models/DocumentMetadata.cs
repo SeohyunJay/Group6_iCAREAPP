@@ -11,28 +11,36 @@ namespace Group6_iCAREAPP.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
+    // Partial class representing metadata associated with a document
     public partial class DocumentMetadata
     {
+        // Constructor initializing the ModificationHistory collection
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public DocumentMetadata()
         {
             this.ModificationHistory = new HashSet<ModificationHistory>();
         }
-    
-        public string docID { get; set; }
-        public string docName { get; set; }
-        public string patientID { get; set; }
-        public System.DateTime dateOfCreation { get; set; }
-        public string createdByID { get; set; }
-        public Nullable<System.DateTime> modificationDate { get; set; }
-        public string modifiedByID { get; set; }
-        public string documentType { get; set; }
-        public string FileName { get; set; }
-        public string drugID { get; set; }
+
+        public string docID { get; set; } // Unique identifier for the document
+        public string docName { get; set; } // Name of the document
+        public string patientID { get; set; } // ID of the patient associated with the document
+        public System.DateTime dateOfCreation { get; set; } // Date when the document was created
+        public string createdByID { get; set; } // ID of the user who created the document
+        public Nullable<System.DateTime> modificationDate { get; set; } // Date when the document was last modified (nullable)
+        public string modifiedByID { get; set; } // ID of the user who last modified the document
+        public string documentType { get; set; } // Type or category of the document (e.g., "Lab Report")
+        public string FileName { get; set; } // Name of the file associated with the document
+        public string drugID { get; set; } // ID of any drug associated with the document
+
+        // Navigation property for the user who created the document
         public virtual iCAREUser iCAREUser { get; set; }
+        // Navigation property for the user who last modified the document
         public virtual iCAREUser iCAREUser1 { get; set; }
+        // Navigation property for the associated patient record
         public virtual PatientRecord PatientRecord { get; set; }
+
+        // Collection property for tracking the modification history of the document
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ModificationHistory> ModificationHistory { get; set; }
     }

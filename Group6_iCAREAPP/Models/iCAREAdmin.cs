@@ -11,14 +11,16 @@ namespace Group6_iCAREAPP.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
+    // Class representing administrative user details within the iCARE system
     public partial class iCAREAdmin
     {
-        public string adminID { get; set; }
-        public string adminEmail { get; set; }
-        public System.DateTime dateHired { get; set; }
-        public Nullable<System.DateTime> dateFinished { get; set; }
-    
+        public string adminID { get; set; } // Unique identifier for the admin
+        public string adminEmail { get; set; } // Email address of the admin
+        public System.DateTime dateHired { get; set; } // Date the admin was hired
+        public Nullable<System.DateTime> dateFinished { get; set; } // Date the admin's role ended (nullable)
+
+        // Navigation property linking to the iCAREUser entity
         public virtual iCAREUser iCAREUser { get; set; }
     }
 }

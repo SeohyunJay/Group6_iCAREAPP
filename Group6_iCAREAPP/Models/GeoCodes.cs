@@ -11,18 +11,21 @@ namespace Group6_iCAREAPP.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
+    // Class representing a geographic code and associated details
     public partial class GeoCodes
     {
+        // Constructor initializing the collection property
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public GeoCodes()
         {
             this.PatientRecord = new HashSet<PatientRecord>();
         }
-    
-        public string geoID { get; set; }
-        public string description { get; set; }
-    
+
+        public string geoID { get; set; } // Unique identifier for the geographic code
+        public string description { get; set; } // Description or name of the geographic area
+
+        // Navigation property for associated patient records linked by geoID
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PatientRecord> PatientRecord { get; set; }
     }

@@ -13,31 +13,37 @@ namespace Group6_iCAREAPP.Models
     using System;
     using System.Collections.Generic;
 
+    // Class representing a user within the iCARE system
     public partial class iCAREUser
     {
+        // Constructor initializing the collection properties
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public iCAREUser()
         {
-            this.DocumentMetadata = new HashSet<DocumentMetadata>();
-            this.DocumentMetadata1 = new HashSet<DocumentMetadata>();
+            this.DocumentMetadata = new HashSet<DocumentMetadata>(); // Documents created by this user
+            this.DocumentMetadata1 = new HashSet<DocumentMetadata>(); // Documents modified by this user
         }
 
-        public string ID { get; set; }
-        public string userName { get; set; }
-        public string name { get; set; }
-        public string email { get; set; }
-        public DateTime registrationDate { get; set; }
-        public string roleID { get; set; }
-        public string geoID { get; set; }
-        public DateTime? contractExpirationDate { get; set; }
+        public string ID { get; set; } // Unique identifier for the user
+        public string userName { get; set; } // Username for login purposes
+        public string name { get; set; } // Full name of the user
+        public string email { get; set; } // Email address of the user
+        public DateTime registrationDate { get; set; } // Date the user registered
+        public string roleID { get; set; } // ID representing the user's role (e.g., "1" for admin)
+        public string geoID { get; set; } // Identifier for the user's geographic or department location
+        public DateTime? contractExpirationDate { get; set; } // Expiration date for the user's contract (nullable)
 
+        // Navigation property for documents created by the user
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DocumentMetadata> DocumentMetadata { get; set; }
+
+        // Navigation property for documents modified by the user
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<DocumentMetadata> DocumentMetadata1 { get; set; }
-        public virtual iCAREAdmin iCAREAdmin { get; set; }
-        public virtual iCAREWorker iCAREWorker { get; set; }
-        public virtual UserPassword UserPassword { get; set; }
-        public virtual UserRole UserRole { get; set; }
+
+        public virtual iCAREAdmin iCAREAdmin { get; set; } // Link to the iCAREAdmin entity if the user is an admin
+        public virtual iCAREWorker iCAREWorker { get; set; } // Link to the iCAREWorker entity if the user is a worker
+        public virtual UserPassword UserPassword { get; set; } // Link to the user's password information
+        public virtual UserRole UserRole { get; set; } // Link to the user's role information
     }
 }

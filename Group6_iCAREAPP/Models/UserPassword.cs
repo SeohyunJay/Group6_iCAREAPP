@@ -15,16 +15,19 @@ namespace Group6_iCAREAPP.Models
     using System.Security.Cryptography;
     using System.Text;
 
+    // Class representing user password information and related functionalities
     public partial class UserPassword
     {
-        public string ID { get; set; }
-        public string userName { get; set; }
-        public string encryptedPassword { get; set; }
-        public int passwordExpiryTime { get; set; }
-        public Nullable<System.DateTime> userAccountExpiryDate { get; set; }
+        public string ID { get; set; } // Unique identifier for the user password entry
+        public string userName { get; set; } // Username associated with the password
+        public string encryptedPassword { get; set; } // Encrypted version of the user's password
+        public int passwordExpiryTime { get; set; } // Expiry time of the password in seconds
+        public Nullable<System.DateTime> userAccountExpiryDate { get; set; } // Expiry date of the user account (nullable)
 
+        // Navigation property linking to the associated iCAREUser entity
         public virtual iCAREUser iCAREUser { get; set; }
 
+        // Method to encrypt a password using SHA-256 hashing
         public string EncryptPassword(string password)
         {
             using (var sha256 = SHA256.Create())
@@ -33,12 +36,13 @@ namespace Group6_iCAREAPP.Models
                 StringBuilder builder = new StringBuilder();
                 foreach (byte b in bytes)
                 {
-                    builder.Append(b.ToString("x2"));
+                    builder.Append(b.ToString("x2")); // Append each byte as a hexadecimal string
                 }
-                return builder.ToString();
+                return builder.ToString(); // Return the encrypted password as a string
             }
         }
 
+        // Static method to encrypt a password using SHA-256 hashing, used for non-instance access
         public static string StaticEncryptPassword(string password)
         {
             using (var sha256 = SHA256.Create())
@@ -47,16 +51,17 @@ namespace Group6_iCAREAPP.Models
                 StringBuilder builder = new StringBuilder();
                 foreach (byte b in bytes)
                 {
-                    builder.Append(b.ToString("x2"));
+                    builder.Append(b.ToString("x2")); // Append each byte as a hexadecimal string
                 }
-                return builder.ToString();
+                return builder.ToString(); // Return the encrypted password as a string
             }
         }
 
+        // Method to validate if the entered password matches the stored encrypted password
         public bool ValidatePassword(string enteredPassword, string storedEncryptedPassword)
         {
-            string hashedEnteredPassword = EncryptPassword(enteredPassword);
-            return hashedEnteredPassword == storedEncryptedPassword;
+            string hashedEnteredPassword = EncryptPassword(enteredPassword); // Hash the entered password
+            return hashedEnteredPassword == storedEncryptedPassword; // Compare with stored password
         }
     }
 }

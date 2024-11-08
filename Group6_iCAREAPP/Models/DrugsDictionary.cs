@@ -11,10 +11,11 @@ namespace Group6_iCAREAPP.Models
 {
     using System;
     using System.Collections.Generic;
-    
+
+    // Class representing a drug entry in the drugs dictionary
     public partial class DrugsDictionary
     {
-        public string drugID { get; set; }
-        public string drugName { get; set; }
+        public string drugID { get; set; } // Unique identifier for the drug
+        public string drugName { get; set; } // Name of the drug
     }
 }

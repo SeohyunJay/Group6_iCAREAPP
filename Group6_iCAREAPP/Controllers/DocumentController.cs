@@ -13,12 +13,15 @@ namespace Group6_iCAREAPP.Controllers
 {
     public class DocumentController : Controller
     {
+        // Database context for accessing database entities
         private Group6_iCAREDBEntities db = new Group6_iCAREDBEntities();
 
+        // Displays a list of patients and their documents based on a search query
         public ActionResult DisplayPalette(string searchQuery)
         {
             var patientQuery = db.PatientRecord.AsQueryable();
 
+            // Filter patient records based on the search query
             if (!string.IsNullOrEmpty(searchQuery))
             {
                 patientQuery = patientQuery.Where(p => p.name.Contains(searchQuery) ||
@@ -26,6 +29,7 @@ namespace Group6_iCAREAPP.Controllers
                                                        db.TreatmentRecord.Any(t => t.patientID == p.patientID && t.description.Contains(searchQuery)));
             }
 
+            // Project patient results and related documents into a view model
             var patientResults = patientQuery.Select(p => new DisplayPaletteViewModel
             {
                 PatientName = p.name,
@@ -51,24 +55,27 @@ namespace Group6_iCAREAPP.Controllers
 
             return View("DisplayPalette", patientResults);
         }
-        
+
+        // GET: Display the form to add a new document
         [HttpGet]
         public ActionResult AddDocument(string patientID)
         {
+            // Populate ViewBag with patient and drug options for the form
             ViewBag.Patients = new SelectList(db.PatientRecord.Select(p => new { p.patientID, p.name }), "patientID", "name");
             ViewBag.Drugs = new SelectList(db.DrugsDictionary.Select(d => new { d.drugID, d.drugName }), "drugID", "drugName");
-
             ViewBag.SelectedPatientID = patientID;
 
             return View();
         }
 
+        // POST: Add a new document with file upload functionality
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // Prevents CSRF attacks
         public ActionResult AddDocument(DocumentMetadata document, HttpPostedFileBase uploadedFile, string selectedDrugID)
         {
             if (ModelState.IsValid)
             {
+                // Handle file upload and save to server
                 if (uploadedFile != null && uploadedFile.ContentLength > 0)
                 {
                     string uploadPath = Server.MapPath("~/Uploads/");
@@ -85,10 +92,12 @@ namespace Group6_iCAREAPP.Controllers
                 }
                 else
                 {
+                    // Display an error if the file upload is missing
                     TempData["ErrorMessage"] = "File upload is required.";
                     return View(document);
                 }
 
+                // Set document metadata properties
                 document.docID = Guid.NewGuid().ToString();
                 document.dateOfCreation = DateTime.Now;
                 document.createdByID = Session["LoggedUserID"]?.ToString();
@@ -97,20 +106,7 @@ namespace Group6_iCAREAPP.Controllers
                 document.documentType = Request.Form["documentType"];
                 document.drugID = string.IsNullOrEmpty(selectedDrugID) ? null : selectedDrugID;
 
-                if (uploadedFile != null && uploadedFile.ContentLength > 0)
-                {
-                    string uploadPath = Server.MapPath("~/Uploads");
-                    if (!Directory.Exists(uploadPath))
-                    {
-                        Directory.CreateDirectory(uploadPath);
-                    }
-                    string filePath = Path.Combine(uploadPath, Path.GetFileName(uploadedFile.FileName));
-
-                    uploadedFile.SaveAs(filePath);
-
-                    document.FileName = uploadedFile.FileName;
-                }
-
+                // Insert document metadata into the database
                 string sqlInsert = @"
                     INSERT INTO DocumentMetadata (docID, docName, patientID, dateOfCreation, createdByID, modificationDate, modifiedByID, documentType, drugID)
                     VALUES (@docID, @docName, @patientID, @dateOfCreation, @createdByID, @modificationDate, @modifiedByID, @documentType, @drugID)";
@@ -131,6 +127,7 @@ namespace Group6_iCAREAPP.Controllers
                 return RedirectToAction("DisplayPalette");
             }
 
+            // Repopulate dropdowns for return to view in case of validation failure
             ViewBag.Patients = new SelectList(db.PatientRecord.Select(p => new { p.patientID, p.name }), "patientID", "name");
             ViewBag.DocumentTypes = new SelectList(new List<string> { "Treatment Record", "Lab Report", "Imaging Result", "Prescription" }); // Add more if needed
             ViewBag.Drugs = new SelectList(db.DrugsDictionary.Select(d => new { d.drugID, d.drugName }), "drugID", "drugName");
@@ -138,14 +135,17 @@ namespace Group6_iCAREAPP.Controllers
             return View(document);
         }
 
+        // GET: Display the form to edit an existing document
         [HttpGet]
         public ActionResult EditDocument(string docID)
         {
+            // Redirect if docID is not provided
             if (string.IsNullOrEmpty(docID))
             {
                 return RedirectToAction("DisplayPalette");
             }
 
+            // Retrieve the document to be edited
             var document = db.DocumentMetadata.FirstOrDefault(d => d.docID == docID);
             if (document == null)
             {
@@ -153,6 +153,7 @@ namespace Group6_iCAREAPP.Controllers
                 return RedirectToAction("DisplayPalette");
             }
 
+            // Populate ViewBag with patient and document type options
             ViewBag.Patients = new SelectList(db.PatientRecord.Select(p => new {
                 p.patientID,
                 p.name
@@ -160,9 +161,9 @@ namespace Group6_iCAREAPP.Controllers
 
             ViewBag.DocumentTypes = new SelectList(new List<SelectListItem>
             {
-            new SelectListItem { Text = "Treatment Record", Value = "Treatment Record" },
-            new SelectListItem { Text = "Report", Value = "Report" },
-            new SelectListItem { Text = "Other", Value = "Other" }
+                new SelectListItem { Text = "Treatment Record", Value = "Treatment Record" },
+                new SelectListItem { Text = "Report", Value = "Report" },
+                new SelectListItem { Text = "Other", Value = "Other" }
             }, "Value", "Text", document.documentType);
 
             ViewBag.FileName = document.docName;
@@ -170,15 +171,18 @@ namespace Group6_iCAREAPP.Controllers
             return View(document);
         }
 
+        // POST: Save changes to an edited document
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken] // Prevents CSRF attacks
         public ActionResult EditDocument(DocumentMetadata document, HttpPostedFileBase uploadedFile, bool deleteFile = false)
         {
             if (ModelState.IsValid)
             {
+                // Update document modification details
                 document.modifiedByID = Session["LoggedUserID"]?.ToString();
                 document.modificationDate = DateTime.Now;
 
+                // Handle file deletion if requested
                 if (deleteFile && !string.IsNullOrEmpty(document.docName))
                 {
                     string existingFilePath = Path.Combine(Server.MapPath("~/Uploads"), document.docName);
@@ -189,6 +193,7 @@ namespace Group6_iCAREAPP.Controllers
                     document.docName = null;
                 }
 
+                // Handle new file upload if provided
                 if (uploadedFile != null && uploadedFile.ContentLength > 0)
                 {
                     string filePath = Path.Combine(Server.MapPath("~/Uploads"), Path.GetFileName(uploadedFile.FileName));
@@ -196,6 +201,7 @@ namespace Group6_iCAREAPP.Controllers
                     document.docName = uploadedFile.FileName;
                 }
 
+                // Update document details in the database
                 string sqlUpdate = @"
                     UPDATE DocumentMetadata 
                     SET docName = @docName, patientID = @patientID, documentType = @documentType, 
@@ -212,10 +218,11 @@ namespace Group6_iCAREAPP.Controllers
                     new SqlParameter("@modifiedByID", document.modifiedByID)
                 );
 
+                // Insert a modification history record
                 string modID = Guid.NewGuid().ToString();
                 string sqlInsertModificationHistory = @"
-            INSERT INTO ModificationHistory (modID, docID, description, modificationDate)
-            VALUES (@modID, @docID, @description, @modificationDate)";
+                    INSERT INTO ModificationHistory (modID, docID, description, modificationDate)
+                    VALUES (@modID, @docID, @description, @modificationDate)";
 
                 db.Database.ExecuteSqlCommand(
                     sqlInsertModificationHistory,
@@ -228,6 +235,7 @@ namespace Group6_iCAREAPP.Controllers
                 return RedirectToAction("DisplayPalette");
             }
 
+            // Repopulate ViewBag dropdowns in case of validation failure
             ViewBag.Patients = new SelectList(db.PatientRecord.ToList(), "patientID", "name", document.patientID);
             ViewBag.DocumentTypes = new SelectList(new List<SelectListItem>
             {
@@ -240,15 +248,18 @@ namespace Group6_iCAREAPP.Controllers
             return View(document);
         }
 
+        // GET: Delete a document by ID
         [HttpGet]
         public ActionResult DeleteDocument(string docID)
         {
+            // Check if document ID is valid
             if (string.IsNullOrEmpty(docID))
             {
                 TempData["ErrorMessage"] = "Invalid document ID.";
                 return RedirectToAction("DisplayPalette");
             }
 
+            // Delete modification history and document record
             string sqlDeleteModificationHistory = "DELETE FROM ModificationHistory WHERE docID = @docID";
             db.Database.ExecuteSqlCommand(sqlDeleteModificationHistory, new SqlParameter("@docID", docID));
 
@@ -258,8 +269,10 @@ namespace Group6_iCAREAPP.Controllers
             return RedirectToAction("DisplayPalette");
         }
 
+        // GET: View documents for a specific patient
         public ActionResult ViewPatientDocuments(string patientID)
         {
+            // Check if the patient exists
             var patient = db.PatientRecord.FirstOrDefault(p => p.patientID == patientID);
             if (patient == null)
             {
@@ -267,6 +280,7 @@ namespace Group6_iCAREAPP.Controllers
                 return RedirectToAction("ManagePatient");
             }
 
+            // Retrieve documents related to the patient
             var patientDocuments = db.DocumentMetadata
                 .Where(d => d.patientID == patientID)
                 .Join(db.iCAREUser, d => d.createdByID, u => u.ID, (d, createdBy) => new { d, createdBy })
@@ -281,6 +295,7 @@ namespace Group6_iCAREAPP.Controllers
                     DocumentType = combined.d.documentType
                 }).ToList();
 
+            // Create and return the view model
             var viewModel = new DisplayPaletteViewModel
             {
                 PatientName = patient.name,
@@ -292,15 +307,18 @@ namespace Group6_iCAREAPP.Controllers
             return View(viewModel);
         }
 
+        // GET: View a specific document by ID
         [HttpGet]
         public ActionResult ViewDocument(string docID)
         {
+            // Check if document ID is provided
             if (string.IsNullOrEmpty(docID))
             {
                 TempData["ErrorMessage"] = "Document ID is required.";
                 return RedirectToAction("DisplayPalette");
             }
 
+            // Retrieve the document metadata
             var document = db.DocumentMetadata.FirstOrDefault(d => d.docID == docID);
             if (document == null)
             {
@@ -308,6 +326,7 @@ namespace Group6_iCAREAPP.Controllers
                 return RedirectToAction("DisplayPalette");
             }
 
+            // Get the file path and check if it exists on the server
             string filePath = Path.Combine(Server.MapPath("~/Uploads/"), document.docName);
             if (!System.IO.File.Exists(filePath))
             {
@@ -315,11 +334,15 @@ namespace Group6_iCAREAPP.Controllers
                 return RedirectToAction("DisplayPalette");
             }
 
+            // Determine the content type based on the file extension
             string fileExtension = Path.GetExtension(filePath).ToLower();
             string contentType = GetContentType(fileExtension);
 
+            // Return the file for download/view
             return File(filePath, contentType, document.docName);
         }
+
+        // Helper method to get content type based on file extension
         private string GetContentType(string fileExtension)
         {
             switch (fileExtension)
@@ -335,6 +358,5 @@ namespace Group6_iCAREAPP.Controllers
                 default: return "application/octet-stream";
             }
         }
-
     }
 }
