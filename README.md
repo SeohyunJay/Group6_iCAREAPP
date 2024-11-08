@@ -26,7 +26,7 @@ To test our application, you will need to set up the database first:
 ## Configuring Parameters
 1. Open the Web.config file in the project.
 2. Find the connection string for Group6_iCAREDBEntities (should be line 64).
-3. Scroll to the right and find where it says 'data source="DESKTOP-1234"'  
+3. Scroll to the right and find where it says 'data source=DESKTOP-7I4C25N'  
 4. Update the data source value with the name of your machine or server (as configured in SQL Server).
 
 ## Running the Application
@@ -127,4 +127,5 @@ Upon login, you will see the 'Patient List' where you will see all patients and 
 ##### Logout
 - select ```Logout``` on the navigation bar to logout of the current user account
 - you will be redirected to the iCARE login page
+
 
