@@ -11,7 +11,40 @@
     <title>@ViewBag.Title - iCARE</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <style>
+        body {
+            background: linear-gradient(to bottom, #cceeff, #e6f7ff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            margin-top: 0 auto;
+        }
+
+
+        .navbar {
+            width: 100%;
+            margin-top: 0 auto;
+            border-radius: 5px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        .body-content {
+            width: 100%;
+            padding: 20px;
+        }
+    </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-dark">
         <div class="container">
@@ -55,6 +88,7 @@
                     {
                         <li>@Html.ActionLink("MyInfo", "MyInfo", "Account", new { area = "" }, new { @class = "nav-link" })</li>
                     }
+                    <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, new { @class = "nav-link" })</li>
                 </ul>
 
                 @if (Session["LoggedUser"] != null)

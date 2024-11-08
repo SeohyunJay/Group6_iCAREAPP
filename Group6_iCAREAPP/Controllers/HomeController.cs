@@ -114,5 +114,9 @@ namespace Group6_iCAREAPP.Controllers
 
             return View(viewModel);
         }
+        public ActionResult About()
+        {
+            return View();
+        }
     }
 }

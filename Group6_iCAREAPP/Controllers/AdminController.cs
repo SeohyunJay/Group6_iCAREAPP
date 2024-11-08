@@ -159,17 +159,39 @@ namespace Group6_iCAREAPP.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult DeleteUser(string id)
         {
-            string sqlDeletePassword = "DELETE FROM UserPassword WHERE ID = @ID";
-            db.Database.ExecuteSqlCommand(sqlDeletePassword, new SqlParameter("@ID", id));
+            bool hasAssignedPatients = db.TreatmentRecord.Any(tr => tr.workerID == id);
 
-            string sqlDeleteUser = "DELETE FROM iCAREUser WHERE ID = @ID";
-            db.Database.ExecuteSqlCommand(sqlDeleteUser, new SqlParameter("@ID", id));
+            if (hasAssignedPatients)
+            {
+                return RedirectToAction("ManageUsers");
+            }
 
+            try
+            {
+                string deleteModificationHistorySql = "DELETE FROM ModificationHistory WHERE modID IN (SELECT modID FROM DocumentMetadata WHERE createdByID = @ID OR modifiedByID = @ID)";
+                db.Database.ExecuteSqlCommand(deleteModificationHistorySql, new SqlParameter("@ID", id));
+
+                string deleteDocumentsSql = "DELETE FROM DocumentMetadata WHERE createdByID = @ID OR modifiedByID = @ID";
+                db.Database.ExecuteSqlCommand(deleteDocumentsSql, new SqlParameter("@ID", id));
+
+                string deleteUserPasswordSql = "DELETE FROM UserPassword WHERE ID = @ID";
+                db.Database.ExecuteSqlCommand(deleteUserPasswordSql, new SqlParameter("@ID", id));
+
+                string deleteUserSql = "DELETE FROM iCAREUser WHERE ID = @ID";
+                db.Database.ExecuteSqlCommand(deleteUserSql, new SqlParameter("@ID", id));
+
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting user: {ex.Message}";
+            }
 
             return RedirectToAction("ManageUsers");
         }
+
 
         [HttpGet]
         public ActionResult AddUser()

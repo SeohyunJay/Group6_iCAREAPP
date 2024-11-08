@@ -170,77 +170,15 @@ namespace Group6_iCAREAPP.Controllers
             return View(document);
         }
 
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult EditDocument(DocumentMetadata document, HttpPostedFileBase uploadedFile, bool deleteFile = false)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        document.modifiedByID = Session["LoggedUserID"]?.ToString();
-        //        document.modificationDate = DateTime.Now;
-
-        //        if (deleteFile && !string.IsNullOrEmpty(document.docName))
-        //        {
-        //            string existingFilePath = Path.Combine(Server.MapPath("~/Uploads"), document.docName);
-
-        //            if (System.IO.File.Exists(existingFilePath))
-        //            {
-        //                System.IO.File.Delete(existingFilePath);
-        //            }
-
-        //            document.docName = null;
-        //        }
-
-        //        if (uploadedFile != null && uploadedFile.ContentLength > 0)
-        //        {
-        //            string filePath = Path.Combine(Server.MapPath("~/Uploads"), Path.GetFileName(uploadedFile.FileName));
-
-        //            uploadedFile.SaveAs(filePath);
-
-        //            document.docName = uploadedFile.FileName;
-        //        }
-
-        //        string sqlUpdate = @"
-        //            UPDATE DocumentMetadata 
-        //            SET docName = @docName, patientID = @patientID, documentType = @documentType, 
-        //                modificationDate = @modificationDate, modifiedByID = @modifiedByID 
-        //            WHERE docID = @docID";
-
-        //        db.Database.ExecuteSqlCommand(
-        //            sqlUpdate,
-        //            new SqlParameter("@docID", document.docID),
-        //            new SqlParameter("@docName", (object)document.docName ?? DBNull.Value),
-        //            new SqlParameter("@patientID", document.patientID),
-        //            new SqlParameter("@documentType", document.documentType),
-        //            new SqlParameter("@modificationDate", document.modificationDate),
-        //            new SqlParameter("@modifiedByID", document.modifiedByID)
-        //        );
-
-        //        return RedirectToAction("DisplayPalette");
-        //    }
-
-        //    ViewBag.Patients = new SelectList(db.PatientRecord.ToList(), "patientID", "name", document.patientID);
-        //    ViewBag.DocumentTypes = new SelectList(new List<SelectListItem>
-        //    {
-        //        new SelectListItem { Text = "Treatment Record", Value = "Treatment Record" },
-        //        new SelectListItem { Text = "Lab Report", Value = "Lab Report" },
-        //        new SelectListItem { Text = "Imaging Result", Value = "Imaging Result" },
-        //        new SelectListItem { Text = "Prescription", Value = "Prescription" }
-        //    }, "Value", "Text", document.documentType);
-
-        //    return View(document);
-        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditDocument(DocumentMetadata document, HttpPostedFileBase uploadedFile, bool deleteFile = false)
         {
             if (ModelState.IsValid)
             {
-                // Set modifiedByID and modificationDate
                 document.modifiedByID = Session["LoggedUserID"]?.ToString();
                 document.modificationDate = DateTime.Now;
 
-                // Handle file deletion
                 if (deleteFile && !string.IsNullOrEmpty(document.docName))
                 {
                     string existingFilePath = Path.Combine(Server.MapPath("~/Uploads"), document.docName);
@@ -251,7 +189,6 @@ namespace Group6_iCAREAPP.Controllers
                     document.docName = null;
                 }
 
-                // Handle file upload
                 if (uploadedFile != null && uploadedFile.ContentLength > 0)
                 {
                     string filePath = Path.Combine(Server.MapPath("~/Uploads"), Path.GetFileName(uploadedFile.FileName));
@@ -259,12 +196,11 @@ namespace Group6_iCAREAPP.Controllers
                     document.docName = uploadedFile.FileName;
                 }
 
-                // Update document metadata in the database
                 string sqlUpdate = @"
-            UPDATE DocumentMetadata 
-            SET docName = @docName, patientID = @patientID, documentType = @documentType, 
-                modificationDate = @modificationDate, modifiedByID = @modifiedByID 
-            WHERE docID = @docID";
+                    UPDATE DocumentMetadata 
+                    SET docName = @docName, patientID = @patientID, documentType = @documentType, 
+                        modificationDate = @modificationDate, modifiedByID = @modifiedByID 
+                    WHERE docID = @docID";
 
                 db.Database.ExecuteSqlCommand(
                     sqlUpdate,
@@ -276,7 +212,6 @@ namespace Group6_iCAREAPP.Controllers
                     new SqlParameter("@modifiedByID", document.modifiedByID)
                 );
 
-                // Insert a record into ModificationHistory
                 string modID = Guid.NewGuid().ToString();
                 string sqlInsertModificationHistory = @"
             INSERT INTO ModificationHistory (modID, docID, description, modificationDate)
@@ -293,66 +228,63 @@ namespace Group6_iCAREAPP.Controllers
                 return RedirectToAction("DisplayPalette");
             }
 
-            // Reload dropdowns if validation fails
             ViewBag.Patients = new SelectList(db.PatientRecord.ToList(), "patientID", "name", document.patientID);
             ViewBag.DocumentTypes = new SelectList(new List<SelectListItem>
-    {
-        new SelectListItem { Text = "Treatment Record", Value = "Treatment Record" },
-        new SelectListItem { Text = "Lab Report", Value = "Lab Report" },
-        new SelectListItem { Text = "Imaging Result", Value = "Imaging Result" },
-        new SelectListItem { Text = "Prescription", Value = "Prescription" }
-    }, "Value", "Text", document.documentType);
+            {
+                new SelectListItem { Text = "Treatment Record", Value = "Treatment Record" },
+                new SelectListItem { Text = "Lab Report", Value = "Lab Report" },
+                new SelectListItem { Text = "Imaging Result", Value = "Imaging Result" },
+                new SelectListItem { Text = "Prescription", Value = "Prescription" }
+            }, "Value", "Text", document.documentType);
 
             return View(document);
         }
 
-
         [HttpGet]
         public ActionResult DeleteDocument(string docID)
         {
-            var document = db.DocumentMetadata.FirstOrDefault(d => d.docID == docID);
-            if (document == null)
+            if (string.IsNullOrEmpty(docID))
             {
-                TempData["ErrorMessage"] = "Document not found.";
+                TempData["ErrorMessage"] = "Invalid document ID.";
                 return RedirectToAction("DisplayPalette");
             }
 
-            db.DocumentMetadata.Remove(document);
-            db.SaveChanges();
+            string sqlDeleteModificationHistory = "DELETE FROM ModificationHistory WHERE docID = @docID";
+            db.Database.ExecuteSqlCommand(sqlDeleteModificationHistory, new SqlParameter("@docID", docID));
+
+            string sqlDeleteDocument = "DELETE FROM DocumentMetadata WHERE docID = @docID";
+            db.Database.ExecuteSqlCommand(sqlDeleteDocument, new SqlParameter("@docID", docID));
 
             return RedirectToAction("DisplayPalette");
-
         }
 
-        [HttpGet]
         public ActionResult ViewPatientDocuments(string patientID)
         {
-            Debug.WriteLine("PatientID: " + patientID);
-
-            var patient = db.PatientRecord
-                            .Where(p => p.patientID.ToString() == patientID)
-                            .FirstOrDefault();
-
+            var patient = db.PatientRecord.FirstOrDefault(p => p.patientID == patientID);
             if (patient == null)
             {
                 TempData["ErrorMessage"] = "Patient not found.";
-                return RedirectToAction("DisplayPalette");
+                return RedirectToAction("ManagePatient");
             }
 
             var patientDocuments = db.DocumentMetadata
-                                      .Where(d => d.patientID == patientID)
-                                      .Select(d => new DocumentLink
-                                      {
-                                          DocID = d.docID.ToString(),
-                                          DocName = d.docName.ToString(),
-                                          DateOfCreation = d.dateOfCreation,
-                                          DocumentType = d.documentType.ToString()
-                                      }).ToList();
+                .Where(d => d.patientID == patientID)
+                .Join(db.iCAREUser, d => d.createdByID, u => u.ID, (d, createdBy) => new { d, createdBy })
+                .Join(db.iCAREUser, combined => combined.d.modifiedByID, u => u.ID, (combined, modifiedBy) => new DocumentLink
+                {
+                    DocID = combined.d.docID,
+                    DocName = combined.d.docName,
+                    DateOfCreation = combined.d.dateOfCreation,
+                    CreatedBy = combined.createdBy.name,
+                    ModificationDate = combined.d.modificationDate,
+                    ModifiedBy = modifiedBy.name,
+                    DocumentType = combined.d.documentType
+                }).ToList();
 
             var viewModel = new DisplayPaletteViewModel
             {
-                PatientName = patient.name.ToString(),
-                PatientID = patient.patientID.ToString(),
+                PatientName = patient.name,
+                PatientID = patient.patientID,
                 dateOfBirth = patient.dateOfBirth,
                 PatientDocuments = patientDocuments
             };
@@ -388,7 +320,6 @@ namespace Group6_iCAREAPP.Controllers
 
             return File(filePath, contentType, document.docName);
         }
-
         private string GetContentType(string fileExtension)
         {
             switch (fileExtension)

@@ -1,9 +1,97 @@
 ﻿@{
     ViewBag.Title = "About";
 }
-<main aria-labelledby="title">
-    <h2 id="title">@ViewBag.Title.</h2>
-    <h3>@ViewBag.Message</h3>
+<head>
+    <style>
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
 
-    <p>Use this area to provide additional information.</p>
-</main>
+        li {
+            margin-bottom: 10px;
+        }
+
+        .li {
+            text-decoration: none;
+        }
+
+        .header {
+            font-size: 35px;
+        }
+
+        .big_header {
+            font-size: 45px;
+        }
+    </style>
+</head>
+<h2 class="big_header"><strong>About iCARE</strong></h2>
+<button onclick="history.back()" class="btn btn-secondary mb-3">Back</button>
+
+
+<p>
+    iCARE is a new digital solution developed to automate and computerize paper-based processes. This system will allow healthcare
+    workers to create and access digital documents at the point of entry, reducing the need for manual data entry and supporting
+    a mobile, paper-free environment.
+</p>
+
+<p class="header"><strong>Key Features of iCARE</strong></p>
+<ul>
+    <li>
+        <strong>User-Friendly Interface:</strong> iCARE offers a streamlined and intuitive interface for clinicians,
+        reducing the time spent on data entry while providing flexibility to adapt to WPHC's complex and changing environment.
+    </li>
+
+    <li>
+        <strong>Document Digitization:</strong> Healthcare professionals can create and digitize documents directly on tablet
+        PCs, ensuring that no extra data capture steps are necessary.
+    </li>
+
+    <li>
+        <strong>Mobile Functionality:</strong> iCARE leverages the unique capabilities of tablet PCs to allow clinicians to
+        work efficiently and complete tasks while moving throughout the facility.
+    </li>
+
+
+</ul>
+
+<p class="header"><strong>Core Functionalities</strong></p>
+<ul>
+
+
+    <li>
+        <strong>iCARE Board & My Board:</strong> The "iCARE Board" displays a patient list by geographic unit, allowing workers to
+        assign themselves to patients. The "My Board" view shows an active list of patients specific to the logged-in user.
+    </li>
+
+    <li>
+        <strong>Palette:</strong> A tablet-sized, button-based interface that simplifies the selection of documents among a wide
+        range of options.
+    </li>
+
+    <li>
+        <strong>Document Creation and Editing:</strong> iCARE provides tools to create new documents and insert clinical information
+        such as treatments, prescriptions, and drug orders, with support for generic and brand name auto-completion.
+    </li>
+
+    <li>
+        <strong>Image Import:</strong> iCARE supports importing scanned images or existing files,
+        which are then tagged for easy retrieval.
+    </li>
+
+    <li>
+        <strong>Metadata Tagging:</strong> All documents in iCARE are tagged with metadata, including patient ID, document
+        creation date, user IDs, and modification details, ensuring comprehensive tracking and easy retrieval.
+    </li>
+
+    <li>
+        <strong>Administrative Control:</strong> Only iCARE administrators can manage (add, edit, delete) worker accounts.
+        Administrators also have the exclusive ability to manage and oversee user permissions within the system.
+    </li>
+
+    <li>
+        <strong>Patient Record Management:</strong> iCARE allows healthcare workers to add and modify patient records, including essential
+        information such as ID, name, date of birth, and associated treatment documents.
+    </li>
+</ul>
+

@@ -128,8 +128,32 @@ namespace Group6_iCAREAPP.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeletePatient(string id)
         {
-            string sqlDelete = "DELETE FROM PatientRecord WHERE patientID = @ID";
-            db.Database.ExecuteSqlCommand(sqlDelete, new SqlParameter("@ID", id));
+            if (string.IsNullOrEmpty(id))
+            {
+                TempData["ErrorMessage"] = "Invalid patient ID.";
+                return RedirectToAction("ManagePatient");
+            }
+
+            try
+            {
+                string sqlDeleteModificationHistory = @"
+                    DELETE FROM ModificationHistory 
+                    WHERE docID IN (SELECT docID FROM DocumentMetadata WHERE patientID = @patientID)";
+                db.Database.ExecuteSqlCommand(sqlDeleteModificationHistory, new SqlParameter("@patientID", id));
+
+                string sqlDeleteDocumentMetadata = "DELETE FROM DocumentMetadata WHERE patientID = @patientID";
+                db.Database.ExecuteSqlCommand(sqlDeleteDocumentMetadata, new SqlParameter("@patientID", id));
+
+                string sqlDeleteTreatmentRecord = "DELETE FROM TreatmentRecord WHERE patientID = @patientID";
+                db.Database.ExecuteSqlCommand(sqlDeleteTreatmentRecord, new SqlParameter("@patientID", id));
+
+                string sqlDeletePatient = "DELETE FROM PatientRecord WHERE patientID = @patientID";
+                db.Database.ExecuteSqlCommand(sqlDeletePatient, new SqlParameter("@patientID", id));
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = $"Error deleting patient: {ex.Message}";
+            }
 
             return RedirectToAction("ManagePatient");
         }

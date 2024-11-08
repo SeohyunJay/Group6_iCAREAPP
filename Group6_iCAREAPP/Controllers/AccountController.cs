@@ -54,7 +54,7 @@ namespace Group6_iCAREAPP.Controllers
 
                     if (userRecord.roleID == "1")
                     {
-                        return RedirectToAction("ManageUsers", "Admin");
+                        return RedirectToAction("Index", "Home");
                     }
                     else
                     {
