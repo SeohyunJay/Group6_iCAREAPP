@@ -25,7 +25,7 @@ To test our application, you will need to set up the database first:
 
 ## Configuring Parameters
 1. Open the Web.config file in the project.
-2. Find the connection string for Group6_iCAREDBEntities (should be line 64).
+2. Find the connection string for Group6_iCAREDBEntities (should be line 69).
 3. Scroll to the right and find where it says 'data source=DESKTOP-7I4C25N'  
 4. Update the data source value with the name of your machine or server (as configured in SQL Server).
 
